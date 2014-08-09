@@ -43,11 +43,12 @@
     "test": "mocha -R spec"
   },
   "devDependencies": {
-    "verb-tag-jscomments": ">= 0.1.4",
-    "verb": ">= 0.2.6",
-    "mocha": "*"
+    "mocha": "*",
+    "should": "^4.0.4",
+    "verb": ">= 0.2.6"
   },
   "dependencies": {
-    "lodash": "^2.4.1"
+    "lodash": "^2.4.1",
+    "verb-tag-jscomments": "^0.2.0"
   }
 }
