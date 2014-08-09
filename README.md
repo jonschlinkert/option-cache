@@ -12,9 +12,9 @@ npm i options-cache --save-dev
 ## API
 Set or get an option.
 
-* `key` **{String}**
-* `value` **{*}**
-* returns `Options` **{Object}**: to enable chaining
+* `key` **{String}**  
+* `value` **{*}**  
+* returns **{Object}** `Options`: to enable chaining  
 
 ```js
 app.option('a', true)
@@ -25,8 +25,8 @@ app.option('a')
 
 Check if `key` is enabled (truthy).
 
-* `key` **{String}**
-* returns  **{}**: {Boolean}
+* `key` **{String}**  
+* returns: {Boolean}  
 
 ```js
 app.enabled('foo')
@@ -37,15 +37,11 @@ app.enabled('foo')
 // => true
 ```
 
-
-
-
-
 ### Options
 
 Initialize a new `Options` cache.
 
-* `options` **{Object}**: Initialize with default options.
+* `options` **{Object}**: Initialize with default options.  
 
 **Example:**
 
@@ -71,17 +67,13 @@ App.prototype.bar = function(value) {
 };
 ```
 
-
-
-
-
-### .option
+### option
 
 Set or get an option.
 
-* `key` **{String}**
-* `value` **{*}**
-* returns `Options` **{Object}**: to enable chaining
+* `key` **{String}**  
+* `value` **{*}**  
+* returns **{Object}** `Options`: to enable chaining  
 
 ```js
 app.option('a', true)
@@ -89,31 +81,23 @@ app.option('a')
 // => true
 ```
 
-
-
-
-
-### .set
+### set
 
 Assign `value` to `key` or return the value of `key`.
 
-* `key` **{String}**
-* `value` **{*}**: The value to set.
-* returns `Options` **{Object}**: to enable chaining
+* `key` **{String}**  
+* `value` **{*}**: The value to set.  
+* returns **{Object}** `Options`: to enable chaining  
 
 ```js
 app.set('foo', true)
 ```
 
-
-
-
-
-### .get
+### get
 
 Return the stored value of `key`.
 
-* `key` **{String}**
+* `key` **{String}**  
 
 ```js
 app.set('foo', true)
@@ -121,15 +105,11 @@ app.get('foo')
 //=> true
 ```
 
-
-
-
-
-### .extend
+### extend
 
 Extend the `options` with the given object. This method is chainable.
 
-* returns  **{Cache}**: for chaining
+* returns **{Cache}**: for chaining  
 
 **Example**
 
@@ -148,26 +128,12 @@ options
   .extend('a.b.c', {fez: 'bang'});
 ```
 
-### args
-
-
-
-
-### obj
-
-
-
-
-
-
-
-
-### .enabled
+### enabled
 
 Check if `key` is enabled (truthy).
 
-* `key` **{String}**
-* returns  **{}**: {Boolean}
+* `key` **{String}**  
+* returns: {Boolean}  
 
 ```js
 app.enabled('foo')
@@ -178,16 +144,12 @@ app.enabled('foo')
 // => true
 ```
 
-
-
-
-
-### .disabled
+### disabled
 
 Check if `key` is disabled (falsey).
 
-* `key` **{String}**
-* returns  **{Boolean}**: Returns true if `key` is disabled.
+* `key` **{String}**  
+* returns **{Boolean}**: Returns true if `key` is disabled.  
 
 ```js
 app.disabled('foo')
@@ -198,16 +160,12 @@ app.disabled('foo')
 // => false
 ```
 
-
-
-
-
-### .enable
+### enable
 
 Enable `key`.
 
-* `key` **{String}**
-* returns `Options` **{Object}**: to enable chaining
+* `key` **{String}**  
+* returns **{Object}** `Options`: to enable chaining  
 
 **Example**
 
@@ -215,16 +173,12 @@ Enable `key`.
 app.enable('foo')
 ```
 
-
-
-
-
-### .disable
+### disable
 
 Disable `key`.
 
-* `key` **{String}**: The option to disable.
-* returns `Options` **{Object}**: to enable chaining
+* `key` **{String}**: The option to disable.  
+* returns **{Object}** `Options`: to enable chaining  
 
 **Example**
 
@@ -232,11 +186,7 @@ Disable `key`.
 app.disable('foo')
 ```
 
-
-
-
-
-### .clear
+### clear
 
 Remove `key` from the cache, or if no value is specified the entire options is reset.
 
