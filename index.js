@@ -37,8 +37,7 @@ var _ = require('lodash');
  * };
  * ```
  *
- * @class Options
- * @param {Object} `options`
+ * @param {Object} `options` Initialize with default options.
  * @constructor
  * @api public
  */
@@ -49,8 +48,6 @@ var Options = module.exports = function(options) {
 
 
 /**
- * ## .option
- *
  * Set or get an option.
  *
  * ```js
@@ -59,10 +56,9 @@ var Options = module.exports = function(options) {
  * // => true
  * ```
  *
- * @method option
  * @param {String} `key`
  * @param {*} `value`
- * @return {*}
+ * @return {Object} `Options`to enable chaining
  * @api public
  */
 
@@ -79,18 +75,15 @@ Options.prototype.option = function(key, value) {
 
 
 /**
- * ## .set
- *
  * Assign `value` to `key` or return the value of `key`.
  *
  * ```js
  * app.set('foo', true)
  * ```
  *
- * @method set
  * @param {String} `key`
  * @param {*} `value` The value to set.
- * @return {Options} to enable chaining
+ * @return {Object} `Options`to enable chaining
  * @api public
  */
 
@@ -101,8 +94,6 @@ Options.prototype.set = function(key, value) {
 
 
 /**
- * ## .get
- *
  * Return the stored value of `key`.
  *
  * ```js
@@ -111,20 +102,58 @@ Options.prototype.set = function(key, value) {
  * //=> true
  * ```
  *
- * @method get
  * @param {String} `key`
- * @return {Options} to enable chaining
  * @api public
  */
 
 Options.prototype.get = function(key) {
+  if (!key) {
+    return this.options;
+  }
   return this.options[key];
 };
 
 
 /**
- * ## .enabled
+ * Extend the `options` with the given object.
+ * This method is chainable.
  *
+ * **Example**
+ *
+ * ```js
+ * options
+ *   .extend({foo: 'bar'}, {baz: 'quux'});
+ *   .extend({fez: 'bang'});
+ * ```
+ *
+ * Or define the property to extend:
+ *
+ * ```js
+ * options
+ *   .extend('a', {foo: 'bar'}, {baz: 'quux'})
+ *   .extend('b', {fez: 'bang'})
+ *   .extend('a.b.c', {fez: 'bang'});
+ * ```
+ *
+ * @chainable
+ * @return {Cache} for chaining
+ * @api public
+ */
+
+Options.prototype.extend = function() {
+  var args = [].slice.call(arguments);
+  if (typeof args[0] === 'string') {
+    var obj = this.get(args[0]) || {};
+    obj = _.extend.apply(_, [obj].concat(_.rest(args)));
+    this.set(args[0], obj);
+    return this;
+  }
+  _.extend.apply(_, [this.options].concat(args));
+  return this;
+};
+
+
+/**
  * Check if `key` is enabled (truthy).
  *
  * ```js
@@ -136,7 +165,6 @@ Options.prototype.get = function(key) {
  * // => true
  * ```
  *
- * @method enabled
  * @param {String} `key`
  * @return {Boolean}
  * @api public
@@ -148,8 +176,6 @@ Options.prototype.enabled = function(key) {
 
 
 /**
- * ## .disabled
- *
  * Check if `key` is disabled (falsey).
  *
  * ```js
@@ -161,9 +187,8 @@ Options.prototype.enabled = function(key) {
  * // => false
  * ```
  *
- * @method disabled
  * @param {String} `key`
- * @return {Boolean}
+ * @return {Boolean} Returns true if `key` is disabled.
  * @api public
  */
 
@@ -173,8 +198,6 @@ Options.prototype.disabled = function(key) {
 
 
 /**
- * ## .enable
- *
  * Enable `key`.
  *
  * **Example**
@@ -183,9 +206,8 @@ Options.prototype.disabled = function(key) {
  * app.enable('foo')
  * ```
  *
- * @method enable
  * @param {String} `key`
- * @return {Options} for chaining
+ * @return {Object} `Options`to enable chaining
  * @api public
  */
 
@@ -195,8 +217,6 @@ Options.prototype.enable = function(key) {
 
 
 /**
- * ## .disable
- *
  * Disable `key`.
  *
  * **Example**
@@ -205,9 +225,8 @@ Options.prototype.enable = function(key) {
  * app.disable('foo')
  * ```
  *
- * @method disable
  * @param {String} `key` The option to disable.
- * @return {Options} for chaining
+ * @return {Object} `Options`to enable chaining
  * @api public
  */
 
@@ -215,3 +234,25 @@ Options.prototype.disable = function(key) {
   return this.set(key, false);
 };
 
+
+/**
+ * Remove `key` from the cache, or if no value is
+ * specified the entire options is reset.
+ *
+ * **Example:**
+ *
+ * ```js
+ * options.clear();
+ * ```
+ *
+ * @chainable
+ * @api public
+ */
+
+Options.prototype.clear = function(key) {
+  if (key) {
+    delete this.options[key];
+  } else {
+    this.options = {};
+  }
+};
