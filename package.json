@@ -1,7 +1,7 @@
 {
   "name": "options-cache",
   "description": "Get and set options easily, for node.js projects.",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "homepage": "https://github.com/jonschlinkert/options-cache",
   "author": {
     "name": "Jon Schlinkert",

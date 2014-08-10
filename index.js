@@ -69,8 +69,7 @@ Options.prototype.option = function(key, value) {
   if (typeof key !== 'string') {
     _.extend(this.options, key);
   }
-  this.options[key] = value;
-  return this;
+  return this.options[key] = value;
 };
 
 
