@@ -63,13 +63,19 @@ var Options = module.exports = function(options) {
  */
 
 Options.prototype.option = function(key, value) {
-  if (!value) {
+  var args = [].slice.call(arguments);
+
+  if (args.length === 1 && typeof key === 'string') {
     return this.options[key];
   }
-  if (typeof key !== 'string') {
-    _.extend(this.options, key);
+
+  if (typeof key === 'object' && !Array.isArray(key)) {
+    _.extend.apply(_, [this.options].concat(args));
+    return this;
   }
-  return this.options[key] = value;
+
+  this.options[key] = value;
+  return this;
 };
 
 
