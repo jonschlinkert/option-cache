@@ -140,8 +140,7 @@ Options.prototype.get = function(key) {
  *   .extend('a.b.c', {fez: 'bang'});
  * ```
  *
- * @chainable
- * @return {Cache} for chaining
+ * @return {Options} for chaining
  * @api public
  */
 
@@ -241,7 +240,7 @@ Options.prototype.disable = function(key) {
 
 
 /**
- * Remove `key` from the cache, or if no value is
+ * Remove `key` from the options, or if no value is
  * specified the entire options is reset.
  *
  * **Example:**
@@ -250,7 +249,6 @@ Options.prototype.disable = function(key) {
  * options.clear();
  * ```
  *
- * @chainable
  * @api public
  */
 
