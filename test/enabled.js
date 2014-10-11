@@ -10,51 +10,38 @@
 var assert = require('assert');
 var should = require('should');
 var Options = require('..');
-var option = new Options();
 
+var app;
 
-describe('option get/set', function () {
-  afterEach(function() {
-    option.clear();
+describe('option enabled', function () {
+  beforeEach(function() {
+    app = new Options();
   });
 
   describe('.enable()', function () {
     it('should set the value to true', function () {
-      option.enable('foo').should.equal(option);
-      option.get('foo').should.be.ok;
+      app.enable('a');
+      app.option('a').should.be.true;
+      app.enabled('a').should.be.true;
     });
   });
 
   describe('.enabled()', function () {
     it('should default to false', function () {
-      option.enabled('xyz').should.be.false;
+      app.enabled('a').should.be.false;
+      // then enable it
+      app.enable('a');
+      app.enabled('a').should.be.true;
+    });
+
+    it('should return true when any value is set', function () {
+      app.option('a', 'b');
+      app.enabled('a').should.be.true;
     });
 
     it('should return true when set', function () {
-      option.set('a', 'b');
-      option.enabled('a').should.be.ok;
-    });
-
-    it('should return true when set', function () {
-      option.set('a', false);
-      option.enabled('a').should.be.false;
-    });
-  });
-
-  describe('.disable()', function () {
-    it('should set the value to false', function () {
-      option.disable('foo').should.equal(option);
-      option.get('foo').should.be.false;
-    });
-  });
-  describe('.disabled()', function () {
-    it('should default to true', function () {
-      option.disabled('xyz').should.be.ok;
-    });
-
-    it('should return false when set', function () {
-      option.set('abc', 'xyz');
-      option.disabled('abc').should.be.false;
+      app.option('a', false);
+      app.enabled('a').should.be.false;
     });
   });
 });

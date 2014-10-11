@@ -1,7 +1,7 @@
 {
   "name": "options-cache",
-  "description": "Get and set options easily, for node.js projects.",
-  "version": "0.2.1",
+  "description": "Simple API for managing options in JavaScript applications.",
+  "version": "0.3.1",
   "homepage": "https://github.com/jonschlinkert/options-cache",
   "author": {
     "name": "Jon Schlinkert",
@@ -21,19 +21,24 @@
     }
   ],
   "keywords": [
-    "node.js",
+    "cache",
+    "config",
+    "define",
+    "disable",
+    "disabled",
+    "enable",
+    "enabled",
+    "extend",
+    "get",
     "javascript",
+    "node.js",
     "obj",
     "object",
     "opt",
-    "opts",
-    "cache",
-    "options",
     "option",
-    "config",
-    "set",
-    "get",
-    "extend"
+    "options",
+    "opts",
+    "set"
   ],
   "main": "index.js",
   "engines": {
@@ -45,10 +50,10 @@
   "devDependencies": {
     "mocha": "*",
     "should": "^4.0.4",
-    "verb": ">= 0.2.6"
+    "verb": ">= 0.2.6",
+    "verb-tag-jscomments": "^0.2.0"
   },
   "dependencies": {
-    "lodash": "^2.4.1",
-    "verb-tag-jscomments": "^0.2.0"
+    "kind-of": "^0.1.0"
   }
 }

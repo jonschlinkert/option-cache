@@ -7,15 +7,13 @@
 
 'use strict';
 
-var _ = require('lodash');
+var typeOf = require('kind-of');
 
 
 /**
- * Initialize a new `Options` cache.
+ * Create a new instance of `Options`.
  *
  * **Example:**
- *
- * In your application:
  *
  * ```js
  * var util = require('util');
@@ -26,11 +24,11 @@ var _ = require('lodash');
  * }
  * util.inherits(App, Options);
  *
- * App.prototype.foo = function(value) {
+ * App.prototype.a = function(value) {
  *   this.enable(value);
  * };
  *
- * App.prototype.bar = function(value) {
+ * App.prototype.b = function(value) {
  *   if (this.enabled(value)) {
  *     // do something
  *   }
@@ -38,7 +36,6 @@ var _ = require('lodash');
  * ```
  *
  * @param {Object} `options` Initialize with default options.
- * @constructor
  * @api public
  */
 
@@ -51,108 +48,30 @@ var Options = module.exports = function(options) {
  * Set or get an option.
  *
  * ```js
- * app.option('a', true)
- * app.option('a')
- * // => true
+ * app.option('a', true);
+ * app.option('a');
+ * //=> true
  * ```
  *
- * @param {String} `key`
- * @param {*} `value`
- * @return {Object} `Options`to enable chaining
+ * @param {String} `key` The option name.
+ * @param {*} `value` The value to set.
+ * @return {*} Returns a `value` when only `key` is defined.
  * @api public
  */
 
 Options.prototype.option = function(key, value) {
   var args = [].slice.call(arguments);
 
-  if (args.length === 1 && typeof key === 'string') {
+  if (args.length === 1 && typeOf(key) === 'string') {
     return this.options[key];
   }
 
-  if (typeof key === 'object' && !Array.isArray(key)) {
-    _.extend.apply(_, [this.options].concat(args));
+  if (typeOf(key) === 'object') {
+    extend.apply(extend, [this.options].concat(args));
     return this;
   }
 
   this.options[key] = value;
-  return this;
-};
-
-
-/**
- * Assign `value` to `key` or return the value of `key`.
- *
- * ```js
- * app.set('foo', true)
- * ```
- *
- * @param {String} `key`
- * @param {*} `value` The value to set.
- * @return {Object} `Options`to enable chaining
- * @api public
- */
-
-Options.prototype.set = function(key, value) {
-  this.options[key] = value;
-  return this;
-};
-
-
-/**
- * Return the stored value of `key`.
- *
- * ```js
- * app.set('foo', true)
- * app.get('foo')
- * //=> true
- * ```
- *
- * @param {String} `key`
- * @api public
- */
-
-Options.prototype.get = function(key) {
-  if (!key) {
-    return this.options;
-  }
-  return this.options[key];
-};
-
-
-/**
- * Extend the `options` with the given object.
- * This method is chainable.
- *
- * **Example**
- *
- * ```js
- * options
- *   .extend({foo: 'bar'}, {baz: 'quux'});
- *   .extend({fez: 'bang'});
- * ```
- *
- * Or define the property to extend:
- *
- * ```js
- * options
- *   .extend('a', {foo: 'bar'}, {baz: 'quux'})
- *   .extend('b', {fez: 'bang'})
- *   .extend('a.b.c', {fez: 'bang'});
- * ```
- *
- * @return {Options} for chaining
- * @api public
- */
-
-Options.prototype.extend = function() {
-  var args = [].slice.call(arguments);
-  if (typeof args[0] === 'string') {
-    var obj = this.get(args[0]) || {};
-    obj = _.extend.apply(_, [obj].concat(_.rest(args)));
-    this.set(args[0], obj);
-    return this;
-  }
-  _.extend.apply(_, [this.options].concat(args));
   return this;
 };
 
@@ -161,12 +80,12 @@ Options.prototype.extend = function() {
  * Check if `key` is enabled (truthy).
  *
  * ```js
- * app.enabled('foo')
- * // => false
+ * app.enabled('a');
+ * //=> false
  *
- * app.enable('foo')
- * app.enabled('foo')
- * // => true
+ * app.enable('a');
+ * app.enabled('a');
+ * //=> true
  * ```
  *
  * @param {String} `key`
@@ -175,7 +94,7 @@ Options.prototype.extend = function() {
  */
 
 Options.prototype.enabled = function(key) {
-  return !!this.get(key);
+  return !!this.option(key);
 };
 
 
@@ -183,12 +102,12 @@ Options.prototype.enabled = function(key) {
  * Check if `key` is disabled (falsey).
  *
  * ```js
- * app.disabled('foo')
- * // => true
+ * app.disabled('a');
+ * //=> true
  *
- * app.enable('foo')
- * app.disabled('foo')
- * // => false
+ * app.enable('a');
+ * app.disabled('a');
+ * //=> false
  * ```
  *
  * @param {String} `key`
@@ -197,7 +116,7 @@ Options.prototype.enabled = function(key) {
  */
 
 Options.prototype.disabled = function(key) {
-  return !this.get(key);
+  return !this.option(key);
 };
 
 
@@ -207,7 +126,7 @@ Options.prototype.disabled = function(key) {
  * **Example**
  *
  * ```js
- * app.enable('foo')
+ * app.enable('a');
  * ```
  *
  * @param {String} `key`
@@ -216,7 +135,7 @@ Options.prototype.disabled = function(key) {
  */
 
 Options.prototype.enable = function(key) {
-  return this.set(key, true);
+  return this.option(key, true);
 };
 
 
@@ -226,7 +145,7 @@ Options.prototype.enable = function(key) {
  * **Example**
  *
  * ```js
- * app.disable('foo')
+ * app.disable('a');
  * ```
  *
  * @param {String} `key` The option to disable.
@@ -235,27 +154,35 @@ Options.prototype.enable = function(key) {
  */
 
 Options.prototype.disable = function(key) {
-  return this.set(key, false);
+  return this.option(key, false);
 };
 
 
 /**
- * Remove `key` from the options, or if no value is
- * specified the entire options is reset.
+ * Extend the target `obj` with properties from other
+ * objects.
  *
- * **Example:**
- *
- * ```js
- * options.clear();
- * ```
- *
- * @api public
+ * @param  {Object}  `obj` The target object. Pass an empty object to shallow clone.
+ * @param  {Objects}
+ * @return {Object}
+ * @api private
  */
 
-Options.prototype.clear = function(key) {
-  if (key) {
-    delete this.options[key];
-  } else {
-    this.options = {};
+function extend(o) {
+  var args = [].slice.call(arguments, 1);
+  if (o == null) {
+    return {};
   }
-};
+  var len = args.length;
+
+  for (var i = 0; i < len; i++) {
+    var obj = args[i];
+
+    for (var key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        o[key] = obj[key];
+      }
+    }
+  }
+  return o;
+}
