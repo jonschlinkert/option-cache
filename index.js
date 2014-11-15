@@ -8,7 +8,7 @@
 'use strict';
 
 var typeOf = require('kind-of');
-
+var merge = require('lodash')._.merge;
 
 /**
  * Create a new instance of `Options`.
@@ -67,7 +67,7 @@ Options.prototype.option = function(key, value) {
   }
 
   if (typeOf(key) === 'object') {
-    extend.apply(extend, [this.options].concat(args));
+    merge.apply(merge, [this.options].concat(args));
     return this;
   }
 
@@ -94,7 +94,7 @@ Options.prototype.option = function(key, value) {
  */
 
 Options.prototype.enabled = function(key) {
-  return !!this.option(key);
+  return Boolean(this.options[key]);
 };
 
 
@@ -116,7 +116,7 @@ Options.prototype.enabled = function(key) {
  */
 
 Options.prototype.disabled = function(key) {
-  return !this.option(key);
+  return !Boolean(this.options[key]);
 };
 
 
@@ -157,32 +157,3 @@ Options.prototype.disable = function(key) {
   return this.option(key, false);
 };
 
-
-/**
- * Extend the target `obj` with properties from other
- * objects.
- *
- * @param  {Object}  `obj` The target object. Pass an empty object to shallow clone.
- * @param  {Objects}
- * @return {Object}
- * @api private
- */
-
-function extend(o) {
-  var args = [].slice.call(arguments, 1);
-  if (o == null) {
-    return {};
-  }
-  var len = args.length;
-
-  for (var i = 0; i < len; i++) {
-    var obj = args[i];
-
-    for (var key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        o[key] = obj[key];
-      }
-    }
-  }
-  return o;
-}
