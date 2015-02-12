@@ -43,7 +43,6 @@ var Options = module.exports = function(options) {
   this.options = options || {};
 };
 
-
 /**
  * Set or get an option.
  *
@@ -71,10 +70,13 @@ Options.prototype.option = function(key, value) {
     return this;
   }
 
+  if (this.isReversed(key) && !this.options.noreverse) {
+    this.reverse(key, value);
+  }
+
   this.options[key] = value;
   return this;
 };
-
 
 /**
  * Check if `key` is enabled (truthy).
@@ -97,7 +99,6 @@ Options.prototype.enabled = function(key) {
   return Boolean(this.options[key]);
 };
 
-
 /**
  * Check if `key` is disabled (falsey).
  *
@@ -119,7 +120,6 @@ Options.prototype.disabled = function(key) {
   return !Boolean(this.options[key]);
 };
 
-
 /**
  * Enable `key`.
  *
@@ -137,7 +137,6 @@ Options.prototype.disabled = function(key) {
 Options.prototype.enable = function(key) {
   return this.option(key, true);
 };
-
 
 /**
  * Disable `key`.
@@ -157,3 +156,56 @@ Options.prototype.disable = function(key) {
   return this.option(key, false);
 };
 
+/**
+ * Return true if `key` is prefixed with `no`.
+ *
+ * ```js
+ * app.isReversed('a');
+ * //=> false
+ *
+ * app.isReversed('no_a');
+ * //=> true
+ * ```
+ *
+ * @param {String} `key`
+ * @return {Boolean} True if `key` is reversed.
+ * @api public
+ */
+
+Options.prototype.isReversed = function(key) {
+  return key.length > 2 && key.slice(0, 2) === 'no';
+};
+
+/**
+ * Reverse the value of `key`.
+ *
+ * **Example**
+ *
+ * ```js
+ * app.option('a', true);
+ * app.option('a');
+ * //=> true
+ *
+ * app.reverse('a');
+ * app.option('a');
+ * //=> false
+ * ```
+ *
+ * @param {String} `key` The option to reverse.
+ * @return {Object} `Options`to enable chaining
+ * @api public
+ */
+
+Options.prototype.reverse = function(key, value) {
+  if (arguments.length === 1) {
+    value = this.option(key);
+  }
+  if (!this.options.noreverse) {
+    if (this.isReversed(key)) {
+      this.options[key.slice(2)] = !value;
+    } else {
+      this.options[key] = !value;
+    }
+  }
+  return this;
+};

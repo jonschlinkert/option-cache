@@ -1,7 +1,7 @@
 {
   "name": "option-cache",
   "description": "Simple API for managing options in JavaScript applications.",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "homepage": "https://github.com/jonschlinkert/option-cache",
   "author": {
     "name": "Jon Schlinkert",
@@ -17,7 +17,7 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/jonschlinkert/option-cache/blob/master/LICENSE-MIT"
+      "url": "https://github.com/jonschlinkert/option-cache/blob/master/LICENSE"
     }
   ],
   "keywords": [
@@ -48,7 +48,7 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "test": "mocha -R spec"
+    "test": "mocha"
   },
   "devDependencies": {
     "mocha": "*",
