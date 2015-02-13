@@ -24,6 +24,10 @@ describe('option', function () {
       app.option('a').should.eql({b: 'c'});
     });
 
+    it('should return the value.', function () {
+      app.option('foo', 'bar').should.equal('bar');
+    });
+
     it('should set an option from an object.', function () {
       app.option({b: {d: 'e'}});
       app.option('b').should.eql({d: 'e'});
@@ -69,18 +73,16 @@ describe('option', function () {
     });
 
     it('should be chainable.', function() {
-      app
-        .option({x: 'xxx', y: 'yyy', z: 'zzz'})
-        .option({a: 'aaa', b: 'bbb', c: 'ccc'});
+      app.option({x: 'xxx', y: 'yyy', z: 'zzz'});
+      app.option({a: 'aaa', b: 'bbb', c: 'ccc'});
 
       app.option('x').should.equal('xxx');
       app.option('a').should.equal('aaa');
     });
 
     it('should extend the `options` object when the first param is a string.', function() {
-      app
-        .option('foo', {x: 'xxx', y: 'yyy', z: 'zzz'})
-        .option('bar', {a: 'aaa', b: 'bbb', c: 'ccc'});
+      app.option('foo', {x: 'xxx', y: 'yyy', z: 'zzz'});
+      app.option('bar', {a: 'aaa', b: 'bbb', c: 'ccc'});
 
       app.option('foo').should.have.property('x');
       app.option('bar').should.have.property('a');
