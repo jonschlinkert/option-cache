@@ -33,7 +33,7 @@ app.option('a');
 //=> true
 ```
 
-### [.enable](index.js#L70)
+### [.enable](index.js#L71)
 
 Enable `key`.
 
@@ -46,7 +46,7 @@ Enable `key`.
 app.enable('a');
 ```
 
-### [.disable](index.js#L88)
+### [.disable](index.js#L89)
 
 Disable `key`.
 
@@ -59,7 +59,7 @@ Disable `key`.
 app.disable('a');
 ```
 
-### [.enabled](index.js#L109)
+### [.enabled](index.js#L110)
 
 Check if `key` is enabled (truthy).
 
@@ -75,7 +75,7 @@ app.enabled('a');
 //=> true
 ```
 
-### [.disabled](index.js#L130)
+### [.disabled](index.js#L131)
 
 Check if `key` is disabled (falsey).
 
@@ -91,7 +91,7 @@ app.disabled('a');
 //=> false
 ```
 
-### [.hasOption](index.js#L150)
+### [.hasOption](index.js#L151)
 
 Return true if `options.hasOwnProperty(key)`
 
@@ -106,7 +106,7 @@ app.hasOption('a');
 //=> true
 ```
 
-### [.isBoolean](index.js#L170)
+### [.isBoolean](index.js#L171)
 
 Return true if `options.hasOwnProperty(key)`
 
@@ -121,7 +121,7 @@ app.hasOption('a');
 //=> true
 ```
 
-### [.flags](index.js#L183)
+### [.flags](index.js#L184)
 
 * `keys` **{Array}**    
 * `returns`: {Array}  

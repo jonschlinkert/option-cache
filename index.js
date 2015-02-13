@@ -50,7 +50,8 @@ Options.prototype.option = function(key, value) {
     merge.apply(merge, [this.options].concat(args));
     return this;
   }
-  return (this.options[key] = value);
+  this.options[key] = value;
+  return this;
 };
 
 /**
