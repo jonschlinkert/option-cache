@@ -19,9 +19,8 @@ describe('option data', function() {
 
   describe('.extend()', function() {
     it('should extend the `cache` object.', function() {
-      app
-        .option({x: 'x', y: 'y', z: 'z'})
-        .option({a: 'a', b: 'b', c: 'c'});
+      app.option({x: 'x', y: 'y', z: 'z'})
+      app.option({a: 'a', b: 'b', c: 'c'});
 
       app.options.should.have.property('a');
       app.options.should.have.property('b');
@@ -35,10 +34,8 @@ describe('option data', function() {
 
   describe('when a string is passed as the first param.', function() {
     it('should extend that property on the cache.', function() {
-      app
-        .option('foo', {x: 'x', y: 'y', z: 'z'})
-        .option('bar', {a: 'a', b: 'b', c: 'c'});
-
+      app.option('foo', {x: 'x', y: 'y', z: 'z'})
+      app.option('bar', {a: 'a', b: 'b', c: 'c'});
       app.option('bar').should.have.property('a');
       app.option('bar').should.have.property('b');
       app.option('bar').should.have.property('c');
@@ -46,7 +43,6 @@ describe('option data', function() {
       app.option('foo').should.have.property('y');
       app.option('foo').should.have.property('z');
     });
-
 
     it('should extend the `cache.data` object.', function() {
       app.option('data', {

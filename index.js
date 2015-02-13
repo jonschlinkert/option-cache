@@ -7,6 +7,7 @@
 
 'use strict';
 
+var toArg = require('to-arg');
 var typeOf = require('kind-of');
 var merge = require('lodash')._.merge;
 
@@ -44,6 +45,23 @@ var Options = module.exports = function(options) {
 };
 
 /**
+ * Prefix to use for negated options. Default
+ * prefix is `no-`
+ *
+ * ```js
+ * app._no = 'no';
+ * app.option('nodot');
+ * app.option('dot');
+ * //=> 'false'
+ * ```
+ *
+ * @type {Boolean}
+ * @api public
+ */
+
+defineGetter('_no', 'no-');
+
+/**
  * Set or get an option.
  *
  * ```js
@@ -59,23 +77,55 @@ var Options = module.exports = function(options) {
  */
 
 Options.prototype.option = function(key, value) {
-  var args = [].slice.call(arguments);
-
-  if (args.length === 1 && typeOf(key) === 'string') {
+  if (arguments.length === 1 && typeOf(key) === 'string') {
+    if (this.isNegated(key)) {
+      this.disable(key.slice(this._no.length));
+      return this.enable(key);
+    }
     return this.options[key];
   }
 
   if (typeOf(key) === 'object') {
-    merge.apply(merge, [this.options].concat(args));
+    merge.apply(merge, [this.options].concat([].slice.call(arguments)));
     return this;
   }
+  return (this.options[key] = value);
+};
 
-  if (this.isReversed(key) && !this.options.noreverse) {
-    this.reverse(key, value);
-  }
+/**
+ * Enable `key`.
+ *
+ * **Example**
+ *
+ * ```js
+ * app.enable('a');
+ * ```
+ *
+ * @param {String} `key`
+ * @return {Object} `Options`to enable chaining
+ * @api public
+ */
 
-  this.options[key] = value;
-  return this;
+Options.prototype.enable = function(key) {
+  return this.option(key, true);
+};
+
+/**
+ * Disable `key`.
+ *
+ * **Example**
+ *
+ * ```js
+ * app.disable('a');
+ * ```
+ *
+ * @param {String} `key` The option to disable.
+ * @return {Object} `Options`to enable chaining
+ * @api public
+ */
+
+Options.prototype.disable = function(key) {
+  return this.option(key, false);
 };
 
 /**
@@ -121,59 +171,84 @@ Options.prototype.disabled = function(key) {
 };
 
 /**
- * Enable `key`.
- *
- * **Example**
+ * Return true if `options.hasOwnProperty(key)`
  *
  * ```js
- * app.enable('a');
+ * app.hasOption('a');
+ * //=> false
+ * app.option('a', 'b');
+ * app.hasOption('a');
+ * //=> true
  * ```
  *
  * @param {String} `key`
- * @return {Object} `Options`to enable chaining
+ * @return {Boolean} True if `key` is is on options.
  * @api public
  */
 
-Options.prototype.enable = function(key) {
-  return this.option(key, true);
+Options.prototype.hasOption = function(key) {
+  return this.options.hasOwnProperty(key);
 };
 
 /**
- * Disable `key`.
- *
- * **Example**
+ * Return true if `options.hasOwnProperty(key)`
  *
  * ```js
- * app.disable('a');
+ * app.hasOption('a');
+ * //=> false
+ * app.option('a', 'b');
+ * app.hasOption('a');
+ * //=> true
  * ```
  *
- * @param {String} `key` The option to disable.
- * @return {Object} `Options`to enable chaining
+ * @param {String} `key`
+ * @return {Boolean} True if `key` is is on options.
  * @api public
  */
 
-Options.prototype.disable = function(key) {
-  return this.option(key, false);
+Options.prototype.isBoolean = function(key) {
+  return typeof this.options[key] === 'boolean';
 };
 
 /**
  * Return true if `key` is prefixed with `no`.
  *
  * ```js
- * app.isReversed('a');
+ * app.isNegated('a');
  * //=> false
  *
- * app.isReversed('no_a');
+ * app.isNegated('no-a');
  * //=> true
  * ```
  *
  * @param {String} `key`
- * @return {Boolean} True if `key` is reversed.
+ * @return {Boolean} True if `key` is invertd.
  * @api public
  */
 
-Options.prototype.isReversed = function(key) {
-  return key.length > 2 && key.slice(0, 2) === 'no';
+Options.prototype.negate = function(key) {
+  return key.slice(0, this._no.length);
+};
+
+/**
+ * Return true if `key` is prefixed with `no`.
+ *
+ * ```js
+ * app.isNegated('a');
+ * //=> false
+ *
+ * app.isNegated('no-a');
+ * //=> true
+ * ```
+ *
+ * @param {String} `key`
+ * @return {Boolean} True if `key` is invertd.
+ * @api public
+ */
+
+Options.prototype.isNegated = function(key) {
+  return key.length > this._no.length
+    && this.negate(key) === this._no;
 };
 
 /**
@@ -186,26 +261,59 @@ Options.prototype.isReversed = function(key) {
  * app.option('a');
  * //=> true
  *
- * app.reverse('a');
+ * app.invert('a');
  * app.option('a');
  * //=> false
  * ```
  *
- * @param {String} `key` The option to reverse.
+ * @param {String} `key` The option to invert.
  * @return {Object} `Options`to enable chaining
  * @api public
  */
 
-Options.prototype.reverse = function(key, value) {
+Options.prototype.invert = function(key, value) {
   if (arguments.length === 1) {
     value = this.option(key);
   }
-  if (!this.options.noreverse) {
-    if (this.isReversed(key)) {
-      this.options[key.slice(2)] = !value;
+
+  if (!this.options.noinvert) {
+    if (this.isNegated(key)) {
+      return (this.options[key.slice(3)] === false);
     } else {
-      this.options[key] = !value;
+      return (this.options[key] = !value);
     }
   }
-  return this;
 };
+
+/**
+ * Generate an array of command line args from
+ * the given `keys` or all options.
+ *
+ * @param  {Array} `keys`
+ * @return {Array}
+ * @api public
+ */
+
+Options.prototype.flags = function(keys) {
+  keys = keys || Object.keys(this.options);
+
+  return keys.map(function (key) {
+    return toArg(key, this.options[key]);
+  }.bind(this));
+};
+
+/**
+ * Create getters
+ */
+
+function defineGetter(name, value) {
+  Object.defineProperty(Options.prototype, name, {
+    configurable: true,
+    get: function () {
+      return value;
+    },
+    set: function (val) {
+      value = val;
+    }
+  });
+}
