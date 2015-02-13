@@ -121,13 +121,29 @@ app.hasOption('a');
 //=> true
 ```
 
-### [.flags](index.js#L184)
+### [.flags](index.js#L200)
+
+Generate an array of command line args from the given `keys` or all options.
 
 * `keys` **{Array}**    
-* `returns`: {Array}  
+* `returns` **{Array}**: Array of args  
 
-Generate an array of command line args from
-the given `keys` or all options.
+```js
+// set some options
+option.set('foo', 'bar');
+option.set('abc', true);
+option.set('xyz', 10);
+option.set('one', false);
+
+// create command line args for all options
+options.flags();
+//=> ['--foo=bar', '--abc', '--xyz=10', '--no-one']
+
+// or specific options
+options.flags(['foo', 'abc']);
+//=> ['--foo=bar', '--abc']
+```
+
 
 <br>
 

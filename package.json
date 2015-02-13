@@ -20,7 +20,9 @@
       "url": "https://github.com/jonschlinkert/option-cache/blob/master/LICENSE"
     }
   ],
-  "files": ["index.js"],
+  "files": [
+    "index.js"
+  ],
   "main": "index.js",
   "engines": {
     "node": ">=0.10.0"
