@@ -14,26 +14,8 @@ var merge = require('lodash')._.merge;
 /**
  * Create a new instance of `Options`.
  *
- * **Example:**
- *
  * ```js
- * var util = require('util');
- * var Options = require('options-cache');
- *
- * function App(options) {
- *   Options.call(this, options);
- * }
- * util.inherits(App, Options);
- *
- * App.prototype.a = function(value) {
- *   this.enable(value);
- * };
- *
- * App.prototype.b = function(value) {
- *   if (this.enabled(value)) {
- *     // do something
- *   }
- * };
+ * var options = new Options();
  * ```
  *
  * @param {Object} `options` Initialize with default options.
@@ -43,23 +25,6 @@ var merge = require('lodash')._.merge;
 var Options = module.exports = function(options) {
   this.options = options || {};
 };
-
-/**
- * Prefix to use for negated options. Default
- * prefix is `no-`
- *
- * ```js
- * app._no = 'no';
- * app.option('nodot');
- * app.option('dot');
- * //=> 'false'
- * ```
- *
- * @type {Boolean}
- * @api public
- */
-
-defineGetter('_no', 'no-');
 
 /**
  * Set or get an option.
@@ -78,13 +43,8 @@ defineGetter('_no', 'no-');
 
 Options.prototype.option = function(key, value) {
   if (arguments.length === 1 && typeOf(key) === 'string') {
-    if (this.isNegated(key)) {
-      this.disable(key.slice(this._no.length));
-      return this.enable(key);
-    }
     return this.options[key];
   }
-
   if (typeOf(key) === 'object') {
     var args = [].slice.call(arguments);
     merge.apply(merge, [this.options].concat(args));
@@ -212,47 +172,6 @@ Options.prototype.isBoolean = function(key) {
 };
 
 /**
- * Return true if `key` is prefixed with `no`.
- *
- * ```js
- * app.isNegated('a');
- * //=> false
- *
- * app.isNegated('no-a');
- * //=> true
- * ```
- *
- * @param {String} `key`
- * @return {Boolean} True if `key` is invertd.
- * @api public
- */
-
-Options.prototype.negate = function(key) {
-  return key.slice(0, this._no.length);
-};
-
-/**
- * Return true if `key` is prefixed with `no`.
- *
- * ```js
- * app.isNegated('a');
- * //=> false
- *
- * app.isNegated('no-a');
- * //=> true
- * ```
- *
- * @param {String} `key`
- * @return {Boolean} True if `key` is invertd.
- * @api public
- */
-
-Options.prototype.isNegated = function(key) {
-  return key.length > this._no.length
-    && this.negate(key) === this._no;
-};
-
-/**
  * Generate an array of command line args from
  * the given `keys` or all options.
  *
@@ -268,19 +187,3 @@ Options.prototype.flags = function(keys) {
     return toArg(key, this.options[key]);
   }.bind(this));
 };
-
-/**
- * Create getters
- */
-
-function defineGetter(name, value) {
-  Object.defineProperty(Options.prototype, name, {
-    configurable: true,
-    get: function () {
-      return value;
-    },
-    set: function (val) {
-      value = val;
-    }
-  });
-}
