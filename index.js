@@ -252,40 +252,6 @@ Options.prototype.isNegated = function(key) {
 };
 
 /**
- * Reverse the value of `key`.
- *
- * **Example**
- *
- * ```js
- * app.option('a', true);
- * app.option('a');
- * //=> true
- *
- * app.invert('a');
- * app.option('a');
- * //=> false
- * ```
- *
- * @param {String} `key` The option to invert.
- * @return {Object} `Options`to enable chaining
- * @api public
- */
-
-Options.prototype.invert = function(key, value) {
-  if (arguments.length === 1) {
-    value = this.option(key);
-  }
-
-  if (!this.options.noinvert) {
-    if (this.isNegated(key)) {
-      return (this.options[key.slice(3)] === false);
-    } else {
-      return (this.options[key] = !value);
-    }
-  }
-};
-
-/**
  * Generate an array of command line args from
  * the given `keys` or all options.
  *
