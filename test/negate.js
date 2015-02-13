@@ -25,6 +25,8 @@ describe('invertd options', function () {
       app.enabled('a').should.be.true;
 
       app.option('no-a').should.be.true;
+      app.option('no-a', true).should.be.true;
+      app.option('no-a', false).should.be.false;
       app.enabled('a').should.be.false;
     });
 

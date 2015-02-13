@@ -86,7 +86,8 @@ Options.prototype.option = function(key, value) {
   }
 
   if (typeOf(key) === 'object') {
-    merge.apply(merge, [this.options].concat([].slice.call(arguments)));
+    var args = [].slice.call(arguments);
+    merge.apply(merge, [this.options].concat(args));
     return this;
   }
   return (this.options[key] = value);
