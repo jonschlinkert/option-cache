@@ -9,42 +9,17 @@ npm i option-cache --save
 ```
 
 ## API
-### [Options](index.js#L43)
+### [Options](index.js#L25)
 
 Create a new instance of `Options`.
 
 * `options` **{Object}**: Initialize with default options.    
 
-**Example:**
-
 ```js
-var util = require('util');
-var Options = require('options-cache');
-
-function App(options) {
-  Options.call(this, options);
-}
-util.inherits(App, Options);
-
-App.prototype.a = function(value) {
-  this.enable(value);
-};
-
-App.prototype.b = function(value) {
-  if (this.enabled(value)) {
-    // do something
-  }
-};
+var options = new Options();
 ```
 
-```js
-app._no = 'no';
-app.option('nodot');
-app.option('dot');
-//=> 'false'
-```
-
-### [.option](index.js#L79)
+### [.option](index.js#L44)
 
 Set or get an option.
 
@@ -58,7 +33,7 @@ app.option('a');
 //=> true
 ```
 
-### [.enable](index.js#L110)
+### [.enable](index.js#L70)
 
 Enable `key`.
 
@@ -71,7 +46,7 @@ Enable `key`.
 app.enable('a');
 ```
 
-### [.disable](index.js#L128)
+### [.disable](index.js#L88)
 
 Disable `key`.
 
@@ -84,7 +59,7 @@ Disable `key`.
 app.disable('a');
 ```
 
-### [.enabled](index.js#L149)
+### [.enabled](index.js#L109)
 
 Check if `key` is enabled (truthy).
 
@@ -100,7 +75,7 @@ app.enabled('a');
 //=> true
 ```
 
-### [.disabled](index.js#L170)
+### [.disabled](index.js#L130)
 
 Check if `key` is disabled (falsey).
 
@@ -116,7 +91,7 @@ app.disabled('a');
 //=> false
 ```
 
-### [.hasOption](index.js#L190)
+### [.hasOption](index.js#L150)
 
 Return true if `options.hasOwnProperty(key)`
 
@@ -131,7 +106,7 @@ app.hasOption('a');
 //=> true
 ```
 
-### [.isBoolean](index.js#L210)
+### [.isBoolean](index.js#L170)
 
 Return true if `options.hasOwnProperty(key)`
 
@@ -146,62 +121,52 @@ app.hasOption('a');
 //=> true
 ```
 
-### [.negate](index.js#L230)
-
-Return true if `key` is prefixed with `no`.
-
-* `key` **{String}**    
-* `returns` **{Boolean}**: True if `key` is reversed.  
-
-```js
-app.isNegated('a');
-//=> false
-
-app.isNegated('no-a');
-//=> true
-```
-
-### [.isNegated](index.js#L250)
-
-Return true if `key` is prefixed with `no`.
-
-* `key` **{String}**    
-* `returns` **{Boolean}**: True if `key` is reversed.  
-
-```js
-app.isNegated('a');
-//=> false
-
-app.isNegated('no-a');
-//=> true
-```
-
-### [.reverse](index.js#L275)
-
-Reverse the value of `key`.
-
-* `key` **{String}**: The option to reverse.    
-* `returns` **{Object}** `Options`: to enable chaining  
-
-**Example**
-
-```js
-app.option('a', true);
-app.option('a');
-//=> true
-
-app.reverse('a');
-app.option('a');
-//=> false
-```
-
-### [.flags](index.js#L298)
+### [.flags](index.js#L183)
 
 * `keys` **{Array}**    
 * `returns`: {Array}  
 
 Generate an array of command line args from
 the given `keys` or all options.
+
+<br>
+
+***
+
+<br>
+
+## Example app
+
+Use options-cache in your javascript application:
+
+```js
+var util = require('util');
+var Options = require('options-cache');
+
+function App(options) {
+  Options.call(this, options);
+  this.init();
+}
+
+util.inherits(App, Options);
+
+App.prototype.init = function() {
+  this.option('cwd', process.cwd());
+  this.option('foo', 'bar');
+};
+
+App.prototype.a = function(value) {
+  this.enable(value);
+};
+
+App.prototype.b = function(value) {
+  if (this.enabled(value)) {
+    // do something
+  } else {
+    // do something else
+  }
+};
+```
 
 ## Author
 
