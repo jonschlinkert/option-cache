@@ -1,7 +1,7 @@
 {
   "name": "option-cache",
   "description": "Simple API for managing options in JavaScript applications.",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "homepage": "https://github.com/jonschlinkert/option-cache",
   "author": {
     "name": "Jon Schlinkert",
@@ -21,27 +21,22 @@
     }
   ],
   "keywords": [
-    "app",
-    "cache",
     "config",
     "configuration",
     "define",
     "disable",
+    "default",
+    "defaults",
     "disabled",
     "enable",
     "enabled",
-    "extend",
     "get",
-    "javascript",
-    "node.js",
-    "obj",
-    "object",
     "opt",
     "option",
     "options",
     "opts",
     "set",
-    "setup"
+    "settings"
   ],
   "main": "index.js",
   "engines": {
