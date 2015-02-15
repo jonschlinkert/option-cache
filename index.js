@@ -133,23 +133,70 @@ Options.prototype.disabled = function(key) {
 };
 
 /**
- * Return true if `options.hasOwnProperty(key)`
+ * Returns true if the value of `key` is strictly `true`.
  *
  * ```js
- * app.hasOption('a');
- * //=> false
  * app.option('a', 'b');
- * app.hasOption('a');
+ * app.isTrue('a');
+ * //=> false
+ *
+ * app.option('c', true);
+ * app.isTrue('c');
  * //=> true
  * ```
  *
  * @param {String} `key`
- * @return {Boolean} True if `key` is is on options.
+ * @return {Boolean} Uses strict equality for comparison.
  * @api public
  */
 
-Options.prototype.hasOption = function(key) {
-  return this.options.hasOwnProperty(key);
+Options.prototype.isTrue = function(key) {
+  return this.options[key] === true;
+};
+
+/**
+ * Returns true if the value of `key` is strictly `false`.
+ *
+ * ```js
+ * app.option('a', null);
+ * app.isFalse('a');
+ * //=> false
+ *
+ * app.option('c', false);
+ * app.isFalse('c');
+ * //=> true
+ * ```
+ *
+ * @param {String} `key`
+ * @return {Boolean} Uses strict equality for comparison.
+ * @api public
+ */
+
+Options.prototype.isFalse = function(key) {
+  return this.options[key] === false;
+};
+
+/**
+ * Return true if the value of key is either `true`
+ * or `false`.
+ *
+ * ```js
+ * app.option('a', 'b');
+ * app.isBoolean('a');
+ * //=> false
+ *
+ * app.option('c', true);
+ * app.isBoolean('c');
+ * //=> true
+ * ```
+ *
+ * @param {String} `key`
+ * @return {Boolean} True if `true` or `false`.
+ * @api public
+ */
+
+Options.prototype.isBoolean = function(key) {
+  return typeof this.options[key] === 'boolean';
 };
 
 /**
@@ -168,8 +215,8 @@ Options.prototype.hasOption = function(key) {
  * @api public
  */
 
-Options.prototype.isBoolean = function(key) {
-  return typeof this.options[key] === 'boolean';
+Options.prototype.hasOption = function(key) {
+  return this.options.hasOwnProperty(key);
 };
 
 /**
