@@ -1,8 +1,8 @@
 /*!
- * options-cache <https://github.com/jonschlinkert/options-cache>
+ * option-cache <https://github.com/jonschlinkert/option-cache>
  *
- * Copyright (c) 2014 Jon Schlinkert, Brian Woodward, contributors.
- * Licensed under the MIT license.
+ * Copyright (c) 2014-2015, Jon Schlinkert.
+ * Licensed under the MIT License.
  */
 
 'use strict';
