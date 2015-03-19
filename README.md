@@ -1,4 +1,4 @@
-# option-cache [![NPM version](https://badge.fury.io/js/option-cache.svg)](http://badge.fury.io/js/option-cache)  [![Build Status](https://travis-ci.org/.svg)](https://travis-ci.org/) 
+# option-cache [![NPM version](https://badge.fury.io/js/option-cache.svg)](http://badge.fury.io/js/option-cache)  [![Build Status](https://travis-ci.org/jonschlinkert/option-cache.svg)](https://travis-ci.org/jonschlinkert/option-cache) 
 
 > Simple API for managing options in JavaScript applications.
 
@@ -224,8 +224,8 @@ App.prototype.b = function(value) {
 
 **Jon Schlinkert**
  
-+ [github/git@github.com:tunnckoCore](https://github.com/git@github.com:tunnckoCore)
-+ [twitter/git@github.com:tunnckoCore](http://twitter.com/git@github.com:tunnckoCore) 
++ [github/jonschlinkert](https://github.com/jonschlinkert)
++ [twitter/jonschlinkert](http://twitter.com/jonschlinkert) 
 
 ## License
 Copyright (c) 2015 Jon Schlinkert  
