@@ -15,7 +15,7 @@ var merge = require('lodash')._.merge;
  * Create a new instance of `Options`.
  *
  * ```js
- * var options = new Options();
+ * var app = new Options();
  * ```
  *
  * @param {Object} `options` Initialize with default options.
@@ -225,17 +225,17 @@ Options.prototype.hasOption = function(key) {
  *
  * ```js
  * // set some options
- * option.set('foo', 'bar');
- * option.set('abc', true);
- * option.set('xyz', 10);
- * option.set('one', false);
+ * app.option('foo', 'bar');
+ * app.option('abc', true);
+ * app.option('xyz', 10);
+ * app.option('one', false);
  *
  * // create command line args for all options
- * options.flags();
+ * app.flags();
  * //=> ['--foo=bar', '--abc', '--xyz=10', '--no-one']
  *
  * // or specific options
- * options.flags(['foo', 'abc']);
+ * app.flags(['foo', 'abc']);
  * //=> ['--foo=bar', '--abc']
  * ```
  *
