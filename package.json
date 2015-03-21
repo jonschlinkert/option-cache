@@ -1,7 +1,7 @@
 {
   "name": "option-cache",
   "description": "Simple API for managing options in JavaScript applications.",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "homepage": "https://github.com/jonschlinkert/option-cache",
   "author": {
     "name": "Jon Schlinkert",
