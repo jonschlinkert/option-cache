@@ -10,6 +10,9 @@
 var toArg = require('to-arg');
 var typeOf = require('kind-of');
 var merge = require('lodash')._.merge;
+var get = require('get-value');
+var set = require('set-value');
+var has = require('has-value');
 
 /**
  * Create a new instance of `Options`.
@@ -22,7 +25,7 @@ var merge = require('lodash')._.merge;
  * @api public
  */
 
-var Options = module.exports = function(options) {
+var Options = module.exports = function Options(options) {
   this.options = options || {};
 };
 
@@ -41,16 +44,21 @@ var Options = module.exports = function(options) {
  * @api public
  */
 
-Options.prototype.option = function(key, value) {
+Options.prototype.option = function(key, val) {
   if (arguments.length === 1 && typeOf(key) === 'string') {
-    return this.options[key];
+    if (key.indexOf('.') === -1) {
+      return this.options[key];
+    }
+    return get(this.options, key);
   }
+
   if (typeOf(key) === 'object') {
-    var args = [].slice.call(arguments);
-    merge.apply(merge, [this.options].concat(args));
-    return this;
+    merge.apply(merge, [this.options].concat([].slice.call(arguments)));
+  } else if (typeOf(val) === 'object') {
+    set(this.options, key, merge(this.option(key) || {}, val));
+  } else {
+    set(this.options, key, val);
   }
-  this.options[key] = value;
   return this;
 };
 
@@ -216,7 +224,10 @@ Options.prototype.isBoolean = function(key) {
  */
 
 Options.prototype.hasOption = function(key) {
-  return this.options.hasOwnProperty(key);
+  if (key.indexOf('.') === -1) {
+    return this.options.hasOwnProperty(key);
+  }
+  return has(this.options, key);
 };
 
 /**
