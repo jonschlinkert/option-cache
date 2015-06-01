@@ -9,7 +9,7 @@
 
 var toArg = require('to-arg');
 var typeOf = require('kind-of');
-var merge = require('lodash')._.merge;
+var merge = require('mixin-deep');
 var get = require('get-value');
 var set = require('set-value');
 var has = require('has-value');
@@ -25,9 +25,24 @@ var has = require('has-value');
  * @api public
  */
 
-var Options = module.exports = function Options(options) {
+var Options = module.exports = function Options(options, obj) {
   this.options = options || {};
+  if (obj) mixin(obj);
 };
+
+/**
+ * Mixin `Options` properties.
+ *
+ * @param {Object} `obj`
+ * @return {Object}
+ * @api private
+ */
+
+function mixin(obj) {
+  for (var key in Options.prototype) {
+    obj[key] = Options.prototype[key];
+  }
+}
 
 /**
  * Set or get an option.
