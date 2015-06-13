@@ -7,12 +7,15 @@
 
 'use strict';
 
-var toArg = require('to-arg');
+/* deps: get-value has-value mixin-deep set-value to-flags */
+var lazy = require('lazy-cache')(require);
+var Emitter = require('component-emitter');
 var typeOf = require('kind-of');
-var merge = require('mixin-deep');
-var get = require('get-value');
-var set = require('set-value');
-var has = require('has-value');
+var get = lazy('get-value');
+var set = lazy('set-value');
+var has = lazy('has-value');
+var merge = lazy('mixin-deep');
+var toFlags = lazy('to-flags');
 
 /**
  * Create a new instance of `Options`.
@@ -26,16 +29,18 @@ var has = require('has-value');
  */
 
 var Options = module.exports = function Options(options, obj) {
+  Emitter.call(this);
   this.options = options || {};
   if (obj) mixin(obj);
 };
+
+Emitter(Options.prototype);
 
 /**
  * Mixin `Options` properties.
  *
  * @param {Object} `obj`
  * @return {Object}
- * @api private
  */
 
 function mixin(obj) {
@@ -64,28 +69,33 @@ Options.prototype.option = function(key, val) {
     if (key.indexOf('.') === -1) {
       return this.options[key];
     }
-    return get(this.options, key);
+    return get()(this.options, key);
   }
-
+  var keys = [], m = merge();
   if (typeOf(key) === 'object') {
-    merge.apply(merge, [this.options].concat([].slice.call(arguments)));
+    var options = {};
+    for (var i = 0; i < arguments.length; i++) {
+      m(options, arguments[i]);
+    }
+    keys = Object.keys(options);
+    m(this.options, options);
   } else if (typeOf(val) === 'object') {
-    set(this.options, key, merge(this.option(key) || {}, val));
+    keys = [key];
+    set()(this.options, key, m(this.option(key) || {}, val));
   } else {
-    set(this.options, key, val);
+    keys = [key];
+    set()(this.options, key, val);
   }
+  this.emit('option', keys);
   return this;
 };
 
 /**
  * Enable `key`.
  *
- * **Example**
- *
  * ```js
  * app.enable('a');
  * ```
- *
  * @param {String} `key`
  * @return {Object} `Options`to enable chaining
  * @api public
@@ -97,8 +107,6 @@ Options.prototype.enable = function(key) {
 
 /**
  * Disable `key`.
- *
- * **Example**
  *
  * ```js
  * app.disable('a');
@@ -242,7 +250,7 @@ Options.prototype.hasOption = function(key) {
   if (key.indexOf('.') === -1) {
     return this.options.hasOwnProperty(key);
   }
-  return has(this.options, key);
+  return has()(this.options, key);
 };
 
 /**
@@ -272,8 +280,5 @@ Options.prototype.hasOption = function(key) {
 
 Options.prototype.flags = function(keys) {
   keys = keys || Object.keys(this.options);
-
-  return keys.map(function (key) {
-    return toArg(key, this.options[key]);
-  }.bind(this));
+  return toFlags()(this.options, keys);
 };
