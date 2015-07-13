@@ -7,14 +7,18 @@
 
 'use strict';
 
-/* deps: get-value has-value mixin-deep set-value to-flags */
-var lazy = require('lazy-cache')(require);
 var Emitter = require('component-emitter');
 var typeOf = require('kind-of');
+
+/**
+ * Lazily required modules
+ */
+
+var lazy = require('lazy-cache')(require);
+var mapVisit = lazy('map-visit');
 var get = lazy('get-value');
 var set = lazy('set-value');
 var has = lazy('has-value');
-var merge = lazy('mixin-deep');
 var toFlags = lazy('to-flags');
 
 /**
@@ -28,257 +32,277 @@ var toFlags = lazy('to-flags');
  * @api public
  */
 
-var Options = module.exports = function Options(options, obj) {
+var Options = module.exports = function Options(options) {
   Emitter.call(this);
   this.options = options || {};
-  if (obj) mixin(obj);
 };
 
-Emitter(Options.prototype);
-
 /**
- * Mixin `Options` properties.
+ * Static method for mixing `Options` methods onto the
+ * provided `object`.
  *
- * @param {Object} `obj`
+ * @param {Object} `object`
  * @return {Object}
  */
 
-function mixin(obj) {
+Options.mixin =function(object) {
   for (var key in Options.prototype) {
-    obj[key] = Options.prototype[key];
+    object.prototype[key] = Options.prototype[key];
   }
-}
+  object.mixin = Options.mixin;
+};
 
 /**
- * Set or get an option.
- *
- * ```js
- * app.option('a', true);
- * app.option('a');
- * //=> true
- * ```
- *
- * @param {String} `key` The option name.
- * @param {*} `value` The value to set.
- * @return {*} Returns a `value` when only `key` is defined.
- * @api public
+ * `Options` prototype methods.
  */
 
-Options.prototype.option = function(key, val) {
-  if (arguments.length === 1 && typeOf(key) === 'string') {
-    if (key.indexOf('.') === -1) {
-      return this.options[key];
+Options.prototype = Emitter({
+  constructor: Options,
+
+  /**
+   * Set or get an option.
+   *
+   * ```js
+   * app.option('a', true);
+   * app.option('a');
+   * //=> true
+   * ```
+   *
+   * @param {String} `key` The option name.
+   * @param {*} `value` The value to set.
+   * @return {*} Returns a `value` when only `key` is defined.
+   * @api public
+   */
+
+  option: function(key, val) {
+    if (typeOf(key) === 'string' && typeOf(val) === 'undefined') {
+      if (key.indexOf('.') === -1) {
+        return this.options[key];
+      }
+      return get()(this.options, key);
     }
-    return get()(this.options, key);
-  }
-  var keys = [], m = merge();
-  if (typeOf(key) === 'object') {
-    var options = {};
-    for (var i = 0; i < arguments.length; i++) {
-      m(options, arguments[i]);
+
+    if (typeOf(key) === 'object' || typeOf(key) === 'array') {
+      return this.mapVisit('option', [].slice.call(arguments));
     }
-    keys = Object.keys(options);
-    m(this.options, options);
-  } else if (typeOf(val) === 'object') {
-    keys = [key];
-    set()(this.options, key, m(this.option(key) || {}, val));
-  } else {
-    keys = [key];
+
     set()(this.options, key, val);
+    this.emit('option', key, val);
+    return this;
+  },
+
+  /**
+   * Enable `key`.
+   *
+   * ```js
+   * app.enable('a');
+   * ```
+   * @param {String} `key`
+   * @return {Object} `Options`to enable chaining
+   * @api public
+   */
+
+  enable: function(key) {
+    this.option(key, true);
+    return this;
+  },
+
+  /**
+   * Disable `key`.
+   *
+   * ```js
+   * app.disable('a');
+   * ```
+   *
+   * @param {String} `key` The option to disable.
+   * @return {Object} `Options`to enable chaining
+   * @api public
+   */
+
+  disable: function(key) {
+    this.option(key, false);
+    return this;
+  },
+
+  /**
+   * Check if `prop` is enabled (truthy).
+   *
+   * ```js
+   * app.enabled('a');
+   * //=> false
+   *
+   * app.enable('a');
+   * app.enabled('a');
+   * //=> true
+   * ```
+   *
+   * @param {String} `prop`
+   * @return {Boolean}
+   * @api public
+   */
+
+  enabled: function(prop) {
+    return Boolean(this.option(prop));
+  },
+
+  /**
+   * Check if `prop` is disabled (falsey).
+   *
+   * ```js
+   * app.disabled('a');
+   * //=> true
+   *
+   * app.enable('a');
+   * app.disabled('a');
+   * //=> false
+   * ```
+   *
+   * @param {String} `prop`
+   * @return {Boolean} Returns true if `prop` is disabled.
+   * @api public
+   */
+
+  disabled: function(prop) {
+    return !Boolean(this.option(prop));
+  },
+
+  /**
+   * Returns true if the value of `prop` is strictly `true`.
+   *
+   * ```js
+   * app.option('a', 'b');
+   * app.isTrue('a');
+   * //=> false
+   *
+   * app.option('c', true);
+   * app.isTrue('c');
+   * //=> true
+   *
+   * app.option({a: {b: {c: true}}});
+   * app.isTrue('a.b.c');
+   * //=> true
+   * ```
+   *
+   * @param {String} `prop`
+   * @return {Boolean} Uses strict equality for comparison.
+   * @api public
+   */
+
+  isTrue: function(prop) {
+    return this.option(prop) === true;
+  },
+
+  /**
+   * Returns true if the value of `key` is strictly `false`.
+   *
+   * ```js
+   * app.option('a', null);
+   * app.isFalse('a');
+   * //=> false
+   *
+   * app.option('c', false);
+   * app.isFalse('c');
+   * //=> true
+   *
+   * app.option({a: {b: {c: false}}});
+   * app.isFalse('a.b.c');
+   * //=> true
+   * ```
+   *
+   * @param {String} `prop`
+   * @return {Boolean} Uses strict equality for comparison.
+   * @api public
+   */
+
+  isFalse: function(prop) {
+    return this.option(prop) === false;
+  },
+
+  /**
+   * Return true if the value of key is either `true`
+   * or `false`.
+   *
+   * ```js
+   * app.option('a', 'b');
+   * app.isBoolean('a');
+   * //=> false
+   *
+   * app.option('c', true);
+   * app.isBoolean('c');
+   * //=> true
+   * ```
+   *
+   * @param {String} `key`
+   * @return {Boolean} True if `true` or `false`.
+   * @api public
+   */
+
+  isBoolean: function(prop) {
+    return typeof this.option(prop) === 'boolean';
+  },
+
+  /**
+   * Return true if `options.hasOwnProperty(key)`
+   *
+   * ```js
+   * app.hasOption('a');
+   * //=> false
+   * app.option('a', 'b');
+   * app.hasOption('a');
+   * //=> true
+   * ```
+   *
+   * @param {String} `prop`
+   * @return {Boolean} True if `prop` exists.
+   * @api public
+   */
+
+  hasOption: function(prop) {
+    if (prop.indexOf('.') === -1) {
+      return this.options.hasOwnProperty(prop);
+    }
+    return has(this.options, prop);
+  },
+
+  /**
+   * Generate an array of command line args from
+   * the given `keys` or all options.
+   *
+   * ```js
+   * // set some options
+   * app.option('foo', 'bar');
+   * app.option('abc', true);
+   * app.option('xyz', 10);
+   * app.option('one', false);
+   *
+   * // create command line args for all options
+   * app.flags();
+   * //=> ['--foo=bar', '--abc', '--xyz=10', '--no-one']
+   *
+   * // or specific options
+   * app.flags(['foo', 'abc']);
+   * //=> ['--foo=bar', '--abc']
+   * ```
+   *
+   * @param  {Array} `keys`
+   * @return {Array} Array of args
+   * @api public
+   */
+
+  flags: function(keys) {
+    keys = keys || Object.keys(this.options);
+    return toFlags()(this.options, keys);
+  },
+
+  /**
+   * Map visit `method` over each object in the given array.
+   *
+   * @param  {String} `method`
+   * @param  {Array} `arr`
+   */
+
+  mapVisit: function(method, arr) {
+    mapVisit()(this, method, arr);
+    return this;
   }
-  this.emit('option', keys);
-  return this;
-};
-
-/**
- * Enable `key`.
- *
- * ```js
- * app.enable('a');
- * ```
- * @param {String} `key`
- * @return {Object} `Options`to enable chaining
- * @api public
- */
-
-Options.prototype.enable = function(key) {
-  return this.option(key, true);
-};
-
-/**
- * Disable `key`.
- *
- * ```js
- * app.disable('a');
- * ```
- *
- * @param {String} `key` The option to disable.
- * @return {Object} `Options`to enable chaining
- * @api public
- */
-
-Options.prototype.disable = function(key) {
-  return this.option(key, false);
-};
-
-/**
- * Check if `key` is enabled (truthy).
- *
- * ```js
- * app.enabled('a');
- * //=> false
- *
- * app.enable('a');
- * app.enabled('a');
- * //=> true
- * ```
- *
- * @param {String} `key`
- * @return {Boolean}
- * @api public
- */
-
-Options.prototype.enabled = function(key) {
-  return Boolean(this.options[key]);
-};
-
-/**
- * Check if `key` is disabled (falsey).
- *
- * ```js
- * app.disabled('a');
- * //=> true
- *
- * app.enable('a');
- * app.disabled('a');
- * //=> false
- * ```
- *
- * @param {String} `key`
- * @return {Boolean} Returns true if `key` is disabled.
- * @api public
- */
-
-Options.prototype.disabled = function(key) {
-  return !Boolean(this.options[key]);
-};
-
-/**
- * Returns true if the value of `key` is strictly `true`.
- *
- * ```js
- * app.option('a', 'b');
- * app.isTrue('a');
- * //=> false
- *
- * app.option('c', true);
- * app.isTrue('c');
- * //=> true
- * ```
- *
- * @param {String} `key`
- * @return {Boolean} Uses strict equality for comparison.
- * @api public
- */
-
-Options.prototype.isTrue = function(key) {
-  return this.options[key] === true;
-};
-
-/**
- * Returns true if the value of `key` is strictly `false`.
- *
- * ```js
- * app.option('a', null);
- * app.isFalse('a');
- * //=> false
- *
- * app.option('c', false);
- * app.isFalse('c');
- * //=> true
- * ```
- *
- * @param {String} `key`
- * @return {Boolean} Uses strict equality for comparison.
- * @api public
- */
-
-Options.prototype.isFalse = function(key) {
-  return this.options[key] === false;
-};
-
-/**
- * Return true if the value of key is either `true`
- * or `false`.
- *
- * ```js
- * app.option('a', 'b');
- * app.isBoolean('a');
- * //=> false
- *
- * app.option('c', true);
- * app.isBoolean('c');
- * //=> true
- * ```
- *
- * @param {String} `key`
- * @return {Boolean} True if `true` or `false`.
- * @api public
- */
-
-Options.prototype.isBoolean = function(key) {
-  return typeof this.options[key] === 'boolean';
-};
-
-/**
- * Return true if `options.hasOwnProperty(key)`
- *
- * ```js
- * app.hasOption('a');
- * //=> false
- * app.option('a', 'b');
- * app.hasOption('a');
- * //=> true
- * ```
- *
- * @param {String} `key`
- * @return {Boolean} True if `key` is is on options.
- * @api public
- */
-
-Options.prototype.hasOption = function(key) {
-  if (key.indexOf('.') === -1) {
-    return this.options.hasOwnProperty(key);
-  }
-  return has()(this.options, key);
-};
-
-/**
- * Generate an array of command line args from
- * the given `keys` or all options.
- *
- * ```js
- * // set some options
- * app.option('foo', 'bar');
- * app.option('abc', true);
- * app.option('xyz', 10);
- * app.option('one', false);
- *
- * // create command line args for all options
- * app.flags();
- * //=> ['--foo=bar', '--abc', '--xyz=10', '--no-one']
- *
- * // or specific options
- * app.flags(['foo', 'abc']);
- * //=> ['--foo=bar', '--abc']
- * ```
- *
- * @param  {Array} `keys`
- * @return {Array} Array of args
- * @api public
- */
-
-Options.prototype.flags = function(keys) {
-  keys = keys || Object.keys(this.options);
-  return toFlags()(this.options, keys);
-};
+});
