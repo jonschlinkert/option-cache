@@ -14,11 +14,10 @@ var Options = require('..');
 
 describe('new Options()', function () {
   it('should load default options from the constructor.', function () {
-    var app = new Options({
-      a: 'b',
-      c: 'd',
-      e: 'f'
-    });
+    var app = new Options();
+    app.option('a', 'b');
+    app.option('c', 'd');
+    app.option('e', 'f');
     app.options.should.have.properties(['a', 'c', 'e']);
     app.options.should.have.property('a', 'b');
     app.options.should.have.property('c', 'd');
@@ -26,20 +25,36 @@ describe('new Options()', function () {
   });
 
   it('should inherit `Options`', function () {
-    function MyApp(options) {
+    function App(options) {
       Options.call(this, options);
     }
-    util.inherits(MyApp, Options);
-    var myApp = new MyApp({
-      a: 'b',
-      c: 'd',
-      e: 'f'
-    });
-    (myApp instanceof Options).should.be.true;
-    (MyApp.super_ === Options).should.be.true;
-    myApp.options.should.have.properties(['a', 'c', 'e']);
-    myApp.options.should.have.property('a', 'b');
-    myApp.options.should.have.property('c', 'd');
-    myApp.options.should.have.property('e', 'f');
+    util.inherits(App, Options);
+    var app = new App();
+    assert.equal(app instanceof Options, true);
+    assert.equal(App.super_ === Options, true);
+    app.option('a', 'b');
+    app.option('c', 'd');
+    app.option('e', 'f');
+    app.options.should.have.properties(['a', 'c', 'e']);
+    app.options.should.have.property('a', 'b');
+    app.options.should.have.property('c', 'd');
+    app.options.should.have.property('e', 'f');
+  });
+
+  it('should mix option-cache properties onto App', function () {
+    function App(options) {
+      Options.call(this, options);
+    }
+    Options.mixin(App);
+    var app = new App();
+    assert.equal(app instanceof Options, false);
+    assert.equal(App.super_ === Options, false);
+    app.option('a', 'b');
+    app.option('c', 'd');
+    app.option('e', 'f');
+    app.options.should.have.properties(['a', 'c', 'e']);
+    app.options.should.have.property('a', 'b');
+    app.options.should.have.property('c', 'd');
+    app.options.should.have.property('e', 'f');
   });
 });

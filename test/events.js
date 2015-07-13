@@ -21,31 +21,35 @@ describe('events', function () {
 
   describe('.option()', function () {
     it('should emit an event for a key-value pair.', function () {
-      app.on('option', function (keys) {
-        keys.should.eql(['a']);
+      app.on('option', function (key) {
+        key.should.eql('a');
       });
       app.option('a', {b: 'c'});
     });
 
     it('should emit an event for an object.', function () {
-      app.on('option', function (keys) {
-        keys.should.eql(['b']);
+      app.on('option', function (key) {
+        key.should.eql('b');
       });
       app.option({b: {d: 'e'}});
     });
 
     it('should set multiple options from an object.', function () {
-      app.on('option', function (keys) {
-        keys.should.eql(['a', 'c', 'e']);
+      var keys = [];
+      app.on('option', function (key) {
+        keys.push(key);
       });
       app.option({a: 'b', c: 'd', e: 'f'});
+      keys.should.eql(['a', 'c', 'e']);
     });
 
     it('should emit an event with the keys from a list of objects.', function () {
-      app.on('option', function (keys) {
-        keys.should.eql(['a', 'c', 'e']);
+      var keys = [];
+      app.on('option', function (key) {
+        keys.push(key);
       });
       app.option({a: 'b'}, {c: 'd'}, {e: 'f'});
+      keys.should.eql(['a', 'c', 'e']);
     });
   });
 });
