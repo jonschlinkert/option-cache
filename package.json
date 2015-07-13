@@ -1,13 +1,10 @@
 {
   "name": "option-cache",
   "description": "Simple API for managing options in JavaScript applications.",
-  "version": "1.5.0",
+  "version": "2.0.0",
   "homepage": "https://github.com/jonschlinkert/option-cache",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/jonschlinkert/option-cache.git"
-  },
+  "repository": "jonschlinkert/option-cache",
   "bugs": {
     "url": "https://github.com/jonschlinkert/option-cache/issues"
   },
@@ -28,13 +25,13 @@
     "has-value": "^0.2.0",
     "kind-of": "^2.0.0",
     "lazy-cache": "^0.1.0",
-    "mixin-deep": "^1.1.1",
+    "map-visit": "^0.1.0",
     "set-value": "^0.2.0",
     "to-flags": "^0.1.0"
   },
   "devDependencies": {
-    "mocha": "^2.2.5",
-    "should": "^6.0.3"
+    "mocha": "*",
+    "should": "*"
   },
   "keywords": [
     "config",
@@ -53,5 +50,18 @@
     "opts",
     "set",
     "settings"
-  ]
+  ],
+  "verb": {
+    "related": {
+      "list": [
+        "map-cache",
+        "cache-base",
+        "config-cache",
+        "engine-cache",
+        "loader-cache",
+        "parser-cache",
+        "helper-cache"
+      ]
+    }
+  }
 }
