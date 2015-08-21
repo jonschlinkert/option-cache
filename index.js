@@ -15,11 +15,11 @@ var typeOf = require('kind-of');
  */
 
 var lazy = require('lazy-cache')(require);
-var mapVisit = lazy('map-visit');
-var get = lazy('get-value');
-var set = lazy('set-value');
-var has = lazy('has-value');
-var toFlags = lazy('to-flags');
+lazy('collection-visit', 'visit');
+lazy('get-value', 'get');
+lazy('set-value', 'set');
+lazy('has-value', 'has');
+lazy('to-flags', 'toFlags');
 
 /**
  * Create a new instance of `Options`.
@@ -79,14 +79,14 @@ Options.prototype = Emitter({
       if (key.indexOf('.') === -1) {
         return this.options[key];
       }
-      return get()(this.options, key);
+      return lazy.get(this.options, key);
     }
 
     if (typeOf(key) === 'object' || typeOf(key) === 'array') {
-      return this.mapVisit('option', [].slice.call(arguments));
+      return this.visit('option', [].slice.call(arguments));
     }
 
-    set()(this.options, key, val);
+    lazy.set(this.options, key, val);
     this.emit('option', key, val);
     return this;
   },
@@ -261,7 +261,7 @@ Options.prototype = Emitter({
     if (prop.indexOf('.') === -1) {
       return this.options.hasOwnProperty(prop);
     }
-    return has(this.options, prop);
+    return lazy.has(this.options, prop);
   },
 
   /**
@@ -291,7 +291,7 @@ Options.prototype = Emitter({
 
   flags: function(keys) {
     keys = keys || Object.keys(this.options);
-    return toFlags()(this.options, keys);
+    return lazy.toFlags(this.options, keys);
   },
 
   /**
@@ -301,8 +301,8 @@ Options.prototype = Emitter({
    * @param  {Array} `arr`
    */
 
-  mapVisit: function(method, arr) {
-    mapVisit()(this, method, arr);
+  visit: function(method, arr) {
+    lazy.visit(this, method, arr);
     return this;
   }
 });
