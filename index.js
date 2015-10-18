@@ -8,18 +8,7 @@
 'use strict';
 
 var Emitter = require('component-emitter');
-var typeOf = require('kind-of');
-
-/**
- * Lazily required modules
- */
-
-var lazy = require('lazy-cache')(require);
-lazy('collection-visit', 'visit');
-lazy('get-value', 'get');
-lazy('set-value', 'set');
-lazy('has-value', 'has');
-lazy('to-flags', 'toFlags');
+var utils = require('./utils');
 
 /**
  * Create a new instance of `Options`.
@@ -32,25 +21,12 @@ lazy('to-flags', 'toFlags');
  * @api public
  */
 
-var Options = module.exports = function Options(options) {
-  Emitter.call(this);
-  this.options = options || {};
-};
-
-/**
- * Static method for mixing `Options` methods onto the
- * provided `object`.
- *
- * @param {Object} `object`
- * @return {Object}
- */
-
-Options.mixin =function(object) {
-  for (var key in Options.prototype) {
-    object.prototype[key] = Options.prototype[key];
+function Options(options) {
+  if (!(this instanceof Options)) {
+    return new Options(options);
   }
-  object.mixin = Options.mixin;
-};
+  this.options = options || {};
+}
 
 /**
  * `Options` prototype methods.
@@ -67,28 +43,60 @@ Options.prototype = Emitter({
    * app.option('a');
    * //=> true
    * ```
-   *
+   * @name .option
    * @param {String} `key` The option name.
    * @param {*} `value` The value to set.
    * @return {*} Returns a `value` when only `key` is defined.
    * @api public
    */
 
-  option: function(key, val) {
-    if (typeOf(key) === 'string' && typeOf(val) === 'undefined') {
-      if (key.indexOf('.') === -1) {
-        return this.options[key];
+  option: function(key, value) {
+    if (typeof key === 'string') {
+      if (arguments.length === 1) {
+        return key.indexOf('.') !== -1
+          ? utils.get(this.options, key)
+          : this.options[key];
       }
-      return lazy.get(this.options, key);
+      utils.set(this.options, key, value);
+      this.emit('option', key, value);
+      return this;
     }
 
-    if (typeOf(key) === 'object' || typeOf(key) === 'array') {
-      return this.visit('option', [].slice.call(arguments));
+    var type = utils.typeOf(key);
+    if (type !== 'object' && type !== 'array') {
+      var msg = 'expected option to be '
+        + 'a string, object or array';
+      throw new TypeError(msg);
     }
 
-    lazy.set(this.options, key, val);
-    this.emit('option', key, val);
+    var args = [].slice.call(arguments);
+    if (type === 'array') {
+      args = [].concat.apply([], args);
+    }
+    this.visit('option', args);
     return this;
+  },
+
+  /**
+   * Return true if `options.hasOwnProperty(key)`
+   *
+   * ```js
+   * app.hasOption('a');
+   * //=> false
+   * app.option('a', 'b');
+   * app.hasOption('a');
+   * //=> true
+   * ```
+   * @name .hasOption
+   * @param {String} `prop`
+   * @return {Boolean} True if `prop` exists.
+   * @api public
+   */
+
+  hasOption: function(prop) {
+    return prop.indexOf('.') === -1
+      ? this.options.hasOwnProperty(prop)
+      : utils.has(this.options, prop);
   },
 
   /**
@@ -97,6 +105,7 @@ Options.prototype = Emitter({
    * ```js
    * app.enable('a');
    * ```
+   * @name .enable
    * @param {String} `key`
    * @return {Object} `Options`to enable chaining
    * @api public
@@ -113,7 +122,7 @@ Options.prototype = Emitter({
    * ```js
    * app.disable('a');
    * ```
-   *
+   * @name .disable
    * @param {String} `key` The option to disable.
    * @return {Object} `Options`to enable chaining
    * @api public
@@ -135,7 +144,7 @@ Options.prototype = Emitter({
    * app.enabled('a');
    * //=> true
    * ```
-   *
+   * @name .enabled
    * @param {String} `prop`
    * @return {Boolean}
    * @api public
@@ -156,7 +165,7 @@ Options.prototype = Emitter({
    * app.disabled('a');
    * //=> false
    * ```
-   *
+   * @name .disabled
    * @param {String} `prop`
    * @return {Boolean} Returns true if `prop` is disabled.
    * @api public
@@ -182,7 +191,7 @@ Options.prototype = Emitter({
    * app.isTrue('a.b.c');
    * //=> true
    * ```
-   *
+   * @name .isTrue
    * @param {String} `prop`
    * @return {Boolean} Uses strict equality for comparison.
    * @api public
@@ -208,7 +217,7 @@ Options.prototype = Emitter({
    * app.isFalse('a.b.c');
    * //=> true
    * ```
-   *
+   * @name .isFalse
    * @param {String} `prop`
    * @return {Boolean} Uses strict equality for comparison.
    * @api public
@@ -231,7 +240,7 @@ Options.prototype = Emitter({
    * app.isBoolean('c');
    * //=> true
    * ```
-   *
+   * @name .isBoolean
    * @param {String} `key`
    * @return {Boolean} True if `true` or `false`.
    * @api public
@@ -242,67 +251,20 @@ Options.prototype = Emitter({
   },
 
   /**
-   * Return true if `options.hasOwnProperty(key)`
-   *
-   * ```js
-   * app.hasOption('a');
-   * //=> false
-   * app.option('a', 'b');
-   * app.hasOption('a');
-   * //=> true
-   * ```
-   *
-   * @param {String} `prop`
-   * @return {Boolean} True if `prop` exists.
-   * @api public
-   */
-
-  hasOption: function(prop) {
-    if (prop.indexOf('.') === -1) {
-      return this.options.hasOwnProperty(prop);
-    }
-    return lazy.has(this.options, prop);
-  },
-
-  /**
-   * Generate an array of command line args from
-   * the given `keys` or all options.
-   *
-   * ```js
-   * // set some options
-   * app.option('foo', 'bar');
-   * app.option('abc', true);
-   * app.option('xyz', 10);
-   * app.option('one', false);
-   *
-   * // create command line args for all options
-   * app.flags();
-   * //=> ['--foo=bar', '--abc', '--xyz=10', '--no-one']
-   *
-   * // or specific options
-   * app.flags(['foo', 'abc']);
-   * //=> ['--foo=bar', '--abc']
-   * ```
-   *
-   * @param  {Array} `keys`
-   * @return {Array} Array of args
-   * @api public
-   */
-
-  flags: function(keys) {
-    keys = keys || Object.keys(this.options);
-    return lazy.toFlags(this.options, keys);
-  },
-
-  /**
-   * Map visit `method` over each object in the given array.
+   * Visit `method` over each object in the given collection.
    *
    * @param  {String} `method`
-   * @param  {Array} `arr`
+   * @param  {Array|Object} `value`
    */
 
-  visit: function(method, arr) {
-    lazy.visit(this, method, arr);
+  visit: function(method, collection) {
+    utils.visit(this, method, collection);
     return this;
   }
 });
+
+/**
+ * Expose `Options`
+ */
+
+module.exports = Options;
