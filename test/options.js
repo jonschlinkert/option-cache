@@ -1,60 +1,51 @@
-/*!
- * option-cache <https://github.com/jonschlinkert/option-cache>
- *
- * Copyright (c) 2014-2015, Jon Schlinkert.
- * Licensed under the MIT License.
- */
-
 'use strict';
 
 var util = require('util');
 var assert = require('assert');
-var should = require('should');
 var Options = require('..');
+var app;
 
-describe('new Options()', function () {
+describe('constructor', function () {
+  it('should be a function', function () {
+    assert(typeof Options === 'function');
+  });
+
+  it('should create an instance of Options', function () {
+    app = new Options();
+    assert(app instanceof Options);
+  });
+
+  it('should instantiate without `new`', function () {
+    app = Options();
+    assert(app instanceof Options);
+  });
+
   it('should load default options from the constructor.', function () {
-    var app = new Options();
+    app = new Options();
     app.option('a', 'b');
     app.option('c', 'd');
     app.option('e', 'f');
-    app.options.should.have.properties(['a', 'c', 'e']);
-    app.options.should.have.property('a', 'b');
-    app.options.should.have.property('c', 'd');
-    app.options.should.have.property('e', 'f');
+    assert(app.options.hasOwnProperty('a'));
+    assert(app.options.hasOwnProperty('c'));
+    assert(app.options.hasOwnProperty('e'));
   });
 
   it('should inherit `Options`', function () {
     function App(options) {
       Options.call(this, options);
     }
-    util.inherits(App, Options);
-    var app = new App();
-    assert.equal(app instanceof Options, true);
-    assert.equal(App.super_ === Options, true);
-    app.option('a', 'b');
-    app.option('c', 'd');
-    app.option('e', 'f');
-    app.options.should.have.properties(['a', 'c', 'e']);
-    app.options.should.have.property('a', 'b');
-    app.options.should.have.property('c', 'd');
-    app.options.should.have.property('e', 'f');
-  });
 
-  it('should mix option-cache properties onto App', function () {
-    function App(options) {
-      Options.call(this, options);
-    }
-    Options.mixin(App);
-    var app = new App();
-    assert.equal(app instanceof Options, false);
-    assert.equal(App.super_ === Options, false);
+    util.inherits(App, Options);
+    app = new App();
+    assert(app instanceof Options);
+    assert(App.super_ === Options);
+
     app.option('a', 'b');
     app.option('c', 'd');
     app.option('e', 'f');
-    app.options.should.have.properties(['a', 'c', 'e']);
-    app.options.should.have.property('a', 'b');
-    app.options.should.have.property('c', 'd');
-    app.options.should.have.property('e', 'f');
+
+    assert(app.options.hasOwnProperty('a'));
+    assert(app.options.hasOwnProperty('c'));
+    assert(app.options.hasOwnProperty('e'));
   });
 });

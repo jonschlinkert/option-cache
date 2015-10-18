@@ -1,16 +1,8 @@
-/*!
- * option-cache <https://github.com/jonschlinkert/option-cache>
- *
- * Copyright (c) 2014-2015, Jon Schlinkert.
- * Licensed under the MIT License.
- */
-
 'use strict';
 
+require('mocha');
 var assert = require('assert');
-var should = require('should');
 var Options = require('..');
-
 var app;
 
 describe('option disable', function () {
@@ -18,28 +10,28 @@ describe('option disable', function () {
     app = new Options();
   });
 
-  describe('.disable()', function () {
+  describe('#disable()', function () {
     it('should set the value to false', function () {
       app.disable('a');
-      app.option('a').should.be.false;
+      assert(!app.option('a'))
     });
   });
 
-  describe('.disabled()', function () {
+  describe('#disabled()', function () {
     it('should default to false', function () {
-      app.disabled('a').should.be.true;
+      assert(app.disabled('a'));
     });
 
     it('should return false when set', function () {
       app.option('a', 'b');
-      app.enabled('a').should.be.true;
-      app.disabled('a').should.be.false;
+      assert(app.enabled('a'));
+      assert(!app.disabled('a'))
     });
 
     it('should return true when set', function () {
       app.option('a', false);
-      app.enabled('a').should.be.false;
-      app.disabled('a').should.be.true;
+      assert(!app.enabled('a'))
+      assert(app.disabled('a'));
     });
   });
 });
