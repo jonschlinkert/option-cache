@@ -22,6 +22,20 @@ describe('option isBoolean', function () {
       assert(app.isBoolean('b'));
     });
 
+    it('should take a list of args', function () {
+      app.option('a.b', true);
+      assert(app.isBoolean('a', 'b'));
+      app.disable('c.d');
+      assert(app.isBoolean('c', 'd'));
+    });
+
+    it('should take an array of args', function () {
+      app.option('a.b', true);
+      assert(app.isBoolean(['a', 'b']));
+      app.disable('c.d');
+      assert(app.isBoolean(['c', 'd']));
+    });
+
     it('should return true if the value is `true`', function () {
       app.option('a', true);
       assert(app.isTrue('a'));

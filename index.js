@@ -93,7 +93,8 @@ Options.prototype = Emitter({
    * @api public
    */
 
-  hasOption: function(prop) {
+  hasOption: function(key) {
+    var prop = utils.toPath.apply(null, arguments);
     return prop.indexOf('.') === -1
       ? this.options.hasOwnProperty(prop)
       : utils.has(this.options, prop);
@@ -112,7 +113,8 @@ Options.prototype = Emitter({
    */
 
   enable: function(key) {
-    this.option(key, true);
+    var prop = utils.toPath.apply(null, arguments);
+    this.option(prop, true);
     return this;
   },
 
@@ -129,7 +131,8 @@ Options.prototype = Emitter({
    */
 
   disable: function(key) {
-    this.option(key, false);
+    var prop = utils.toPath.apply(null, arguments);
+    this.option(prop, false);
     return this;
   },
 
@@ -150,7 +153,8 @@ Options.prototype = Emitter({
    * @api public
    */
 
-  enabled: function(prop) {
+  enabled: function(key) {
+    var prop = utils.toPath.apply(null, arguments);
     return Boolean(this.option(prop));
   },
 
@@ -171,7 +175,8 @@ Options.prototype = Emitter({
    * @api public
    */
 
-  disabled: function(prop) {
+  disabled: function(key) {
+    var prop = utils.toPath.apply(null, arguments);
     return !Boolean(this.option(prop));
   },
 
@@ -197,7 +202,8 @@ Options.prototype = Emitter({
    * @api public
    */
 
-  isTrue: function(prop) {
+  isTrue: function(key) {
+    var prop = utils.toPath.apply(null, arguments);
     return this.option(prop) === true;
   },
 
@@ -223,7 +229,8 @@ Options.prototype = Emitter({
    * @api public
    */
 
-  isFalse: function(prop) {
+  isFalse: function(key) {
+    var prop = utils.toPath.apply(null, arguments);
     return this.option(prop) === false;
   },
 
@@ -246,7 +253,8 @@ Options.prototype = Emitter({
    * @api public
    */
 
-  isBoolean: function(prop) {
+  isBoolean: function(key) {
+    var prop = utils.toPath.apply(null, arguments);
     return typeof this.option(prop) === 'boolean';
   },
 
