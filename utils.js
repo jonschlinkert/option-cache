@@ -8,6 +8,7 @@ var utils = require('lazy-cache')(require);
 var fn = require;
 
 require = utils;
+require('arr-flatten', 'flatten');
 require('to-object-path', 'toPath');
 require('collection-visit', 'visit');
 require('get-value', 'get');

@@ -51,6 +51,10 @@ Options.prototype = Emitter({
    */
 
   option: function(key, value) {
+    if (arguments.length === 2 && Array.isArray(key)) {
+      key = utils.toPath(key);
+    }
+
     if (typeof key === 'string') {
       if (arguments.length === 1) {
         return key.indexOf('.') !== -1
@@ -71,7 +75,7 @@ Options.prototype = Emitter({
 
     var args = [].slice.call(arguments);
     if (type === 'array') {
-      args = [].concat.apply([], args);
+      args = utils.flatten(args);
     }
     this.visit('option', args);
     return this;
@@ -94,7 +98,7 @@ Options.prototype = Emitter({
    */
 
   hasOption: function(key) {
-    var prop = utils.toPath.apply(null, arguments);
+    var prop = utils.toPath(arguments);
     return prop.indexOf('.') === -1
       ? this.options.hasOwnProperty(prop)
       : utils.has(this.options, prop);
@@ -113,8 +117,7 @@ Options.prototype = Emitter({
    */
 
   enable: function(key) {
-    var prop = utils.toPath.apply(null, arguments);
-    this.option(prop, true);
+    this.option(key, true);
     return this;
   },
 
@@ -131,8 +134,7 @@ Options.prototype = Emitter({
    */
 
   disable: function(key) {
-    var prop = utils.toPath.apply(null, arguments);
-    this.option(prop, false);
+    this.option(key, false);
     return this;
   },
 
@@ -154,7 +156,7 @@ Options.prototype = Emitter({
    */
 
   enabled: function(key) {
-    var prop = utils.toPath.apply(null, arguments);
+    var prop = utils.toPath(arguments);
     return Boolean(this.option(prop));
   },
 
@@ -176,7 +178,7 @@ Options.prototype = Emitter({
    */
 
   disabled: function(key) {
-    var prop = utils.toPath.apply(null, arguments);
+    var prop = utils.toPath(arguments);
     return !Boolean(this.option(prop));
   },
 
@@ -203,7 +205,7 @@ Options.prototype = Emitter({
    */
 
   isTrue: function(key) {
-    var prop = utils.toPath.apply(null, arguments);
+    var prop = utils.toPath(arguments);
     return this.option(prop) === true;
   },
 
@@ -230,7 +232,7 @@ Options.prototype = Emitter({
    */
 
   isFalse: function(key) {
-    var prop = utils.toPath.apply(null, arguments);
+    var prop = utils.toPath(arguments);
     return this.option(prop) === false;
   },
 
@@ -254,7 +256,7 @@ Options.prototype = Emitter({
    */
 
   isBoolean: function(key) {
-    var prop = utils.toPath.apply(null, arguments);
+    var prop = utils.toPath(arguments);
     return typeof this.option(prop) === 'boolean';
   },
 

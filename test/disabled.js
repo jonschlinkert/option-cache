@@ -13,7 +13,17 @@ describe('option disable', function () {
   describe('#disable()', function () {
     it('should set the value to false', function () {
       app.disable('a');
-      assert(!app.option('a'))
+      assert(app.options.a === false);
+    });
+
+    it('should disable a nested value', function () {
+      app.disable('a.b.c');
+      assert(app.options.a.b.c === false);
+    });
+
+    it('should support array syntax', function () {
+      app.disable(['a', 'b', 'c']);
+      assert(app.options.a.b.c === false);
     });
   });
 
@@ -25,12 +35,12 @@ describe('option disable', function () {
     it('should return false when set', function () {
       app.option('a', 'b');
       assert(app.enabled('a'));
-      assert(!app.disabled('a'))
+      assert(!app.disabled('a'));
     });
 
     it('should return true when set', function () {
       app.option('a', false);
-      assert(!app.enabled('a'))
+      assert(!app.enabled('a'));
       assert(app.disabled('a'));
     });
   });
