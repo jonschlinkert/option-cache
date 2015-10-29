@@ -51,15 +51,18 @@ Options.prototype = Emitter({
    */
 
   option: function(key, value) {
-    if (arguments.length === 2 && Array.isArray(key)) {
-      key = utils.toPath(key);
+    if (Array.isArray(key)) {
+      if (arguments.length > 1) {
+        key = utils.toPath(key);
+
+      } else if (typeof key[0] === 'string') {
+        key = utils.toPath(arguments);
+      }
     }
 
     if (typeof key === 'string') {
       if (arguments.length === 1) {
-        return key.indexOf('.') !== -1
-          ? utils.get(this.options, key)
-          : this.options[key];
+        return utils.get(this.options, key);
       }
       utils.set(this.options, key, value);
       this.emit('option', key, value);

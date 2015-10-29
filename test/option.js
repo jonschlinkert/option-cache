@@ -52,9 +52,19 @@ describe('#option()', function () {
       assert.deepEqual(app.option('a'), {b: 'c'});
     });
 
+    it('should support passing an array as the key', function () {
+      app.option({a: {b: {c: 'd'}}});
+      assert.equal(app.option(['a', 'b', 'c']), 'd');
+    });
+
     it('should set a nested property.', function () {
       app.option('a.b.c', {d: 'e'});
       assert.deepEqual(app.options.a, {b: {c: {d: 'e'}}});
+    });
+
+    it('should get a nested property.', function () {
+      app.option('a.b.c', {d: 'e'});
+      assert.deepEqual(app.option('a.b.c.d'), 'e');
     });
 
     it('should set an option from an object.', function () {
