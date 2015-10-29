@@ -56,7 +56,7 @@ app.option('a');
 //=> true
 ```
 
-### [.hasOption](index.js#L100)
+### [.hasOption](index.js#L103)
 
 Return true if `options.hasOwnProperty(key)`
 
@@ -75,7 +75,7 @@ app.hasOption('a');
 //=> true
 ```
 
-### [.enable](index.js#L119)
+### [.enable](index.js#L122)
 
 Enable `key`.
 
@@ -90,7 +90,7 @@ Enable `key`.
 app.enable('a');
 ```
 
-### [.disable](index.js#L136)
+### [.disable](index.js#L139)
 
 Disable `key`.
 
@@ -105,7 +105,7 @@ Disable `key`.
 app.disable('a');
 ```
 
-### [.enabled](index.js#L158)
+### [.enabled](index.js#L161)
 
 Check if `prop` is enabled (truthy).
 
@@ -125,7 +125,7 @@ app.enabled('a');
 //=> true
 ```
 
-### [.disabled](index.js#L180)
+### [.disabled](index.js#L183)
 
 Check if `prop` is disabled (falsey).
 
@@ -145,7 +145,7 @@ app.disabled('a');
 //=> false
 ```
 
-### [.isTrue](index.js#L207)
+### [.isTrue](index.js#L210)
 
 Returns true if the value of `prop` is strictly `true`.
 
@@ -170,7 +170,7 @@ app.isTrue('a.b.c');
 //=> true
 ```
 
-### [.isFalse](index.js#L234)
+### [.isFalse](index.js#L237)
 
 Returns true if the value of `key` is strictly `false`.
 
@@ -195,7 +195,7 @@ app.isFalse('a.b.c');
 //=> true
 ```
 
-### [.isBoolean](index.js#L258)
+### [.isBoolean](index.js#L261)
 
 Return true if the value of key is either `true` or `false`.
 
