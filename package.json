@@ -33,19 +33,18 @@
   },
   "devDependencies": {
     "gulp": "^3.9.0",
+    "gulp-eslint": "^1.1.1",
     "gulp-istanbul": "^0.10.1",
-    "gulp-jshint": "^1.11.2",
     "gulp-mocha": "^2.1.3",
-    "jshint-stylish": "^2.0.1",
     "mocha": "*"
   },
   "keywords": [
     "config",
     "configuration",
-    "define",
-    "disable",
     "default",
     "defaults",
+    "define",
+    "disable",
     "disabled",
     "enable",
     "enabled",
@@ -68,6 +67,9 @@
         "parser-cache",
         "helper-cache"
       ]
-    }
+    },
+    "reflinks": [
+      "verb"
+    ]
   }
 }
