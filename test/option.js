@@ -4,8 +4,8 @@ var assert = require('assert');
 var Options = require('..');
 var app;
 
-describe('#option()', function () {
-  describe('method', function () {
+describe('#option()', function() {
+  describe('method', function() {
     beforeEach(function() {
       app = new Options();
     });
@@ -24,16 +24,16 @@ describe('#option()', function () {
     });
   });
 
-  describe('errors', function () {
+  describe('errors', function() {
     beforeEach(function() {
       app = new Options();
     });
 
-    it('should throw when invalid args are passed', function (done) {
+    it('should throw when invalid args are passed', function(done) {
       try {
         app.option(null);
         done(new Error('expected an error.'));
-      } catch(err) {
+      } catch (err) {
         assert(err);
         assert(err.message);
         assert(err.message === 'expected option to be a string, object or array');
@@ -42,44 +42,44 @@ describe('#option()', function () {
     });
   });
 
-  describe('set', function () {
+  describe('set', function() {
     beforeEach(function() {
       app = new Options();
     });
 
-    it('should set an option from a key-value pair.', function () {
+    it('should set an option from a key-value pair.', function() {
       app.option('a', {b: 'c'});
       assert.deepEqual(app.option('a'), {b: 'c'});
     });
 
-    it('should support passing an array as the key', function () {
+    it('should support passing an array as the key', function() {
       app.option({a: {b: {c: 'd'}}});
       assert.equal(app.option(['a', 'b', 'c']), 'd');
     });
 
-    it('should set a nested property.', function () {
+    it('should set a nested property.', function() {
       app.option('a.b.c', {d: 'e'});
       assert.deepEqual(app.options.a, {b: {c: {d: 'e'}}});
     });
 
-    it('should get a nested property.', function () {
+    it('should get a nested property.', function() {
       app.option('a.b.c', {d: 'e'});
       assert.deepEqual(app.option('a.b.c.d'), 'e');
     });
 
-    it('should set an option from an object.', function () {
+    it('should set an option from an object.', function() {
       app.option({b: {d: 'e'}});
       assert.deepEqual(app.option('b'), {d: 'e'});
     });
 
-    it('should set properties from an object.', function () {
+    it('should set properties from an object.', function() {
       app.option({a: 'b', c: 'd', e: 'f'});
       assert(app.options.hasOwnProperty('a'));
       assert(app.options.hasOwnProperty('c'));
       assert(app.options.hasOwnProperty('e'));
     });
 
-    it('should set a list of values', function () {
+    it('should set a list of values', function() {
       app.option({g: 'h'}, {i: 'j'}, {k: 'l'});
       assert(app.options.hasOwnProperty('g'));
       assert(app.options.g === 'h');
@@ -89,7 +89,7 @@ describe('#option()', function () {
       assert(app.options.k === 'l');
     });
 
-    it('should set an array of values', function () {
+    it('should set an array of values', function() {
       app.option([{g: 'h'}, {i: 'j'}, {k: 'l'}]);
       assert(app.options.hasOwnProperty('g'));
       assert(app.options.g === 'h');
@@ -99,7 +99,7 @@ describe('#option()', function () {
       assert(app.options.k === 'l');
     });
 
-    it('should set options from multiple objects.', function () {
+    it('should set options from multiple objects.', function() {
       app.option({a: 'b'}, {c: 'd'}, {e: 'f'});
       assert(app.options.hasOwnProperty('a'));
       assert(app.options.hasOwnProperty('c'));
@@ -112,7 +112,7 @@ describe('#option()', function () {
     });
   });
 
-  describe('get', function () {
+  describe('get', function() {
     beforeEach(function() {
       app = new Options();
     });
@@ -122,7 +122,7 @@ describe('#option()', function () {
       assert.equal(app.option('a'), 'b');
     });
 
-    it('should get a nested property.', function () {
+    it('should get a nested property.', function() {
       app.option('a.b.c', {d: 'e'});
       assert.deepEqual(app.option('a'), {b: {c: {d: 'e'}}});
       assert.deepEqual(app.option('a.b'), {c: {d: 'e'}});
@@ -130,7 +130,7 @@ describe('#option()', function () {
     });
   });
 
-  describe('extend', function () {
+  describe('extend', function() {
     beforeEach(function() {
       app = new Options();
     });
@@ -161,7 +161,7 @@ describe('#option()', function () {
     });
 
     it('should extend the `cache` object.', function() {
-      app.option({x: 'x', y: 'y', z: 'z'})
+      app.option({x: 'x', y: 'y', z: 'z'});
       app.option({a: 'a', b: 'b', c: 'c'});
 
       assert(app.options.hasOwnProperty('a'));
@@ -173,7 +173,7 @@ describe('#option()', function () {
     });
 
     it('should work with string-object', function() {
-      app.option('foo', {x: 'x', y: 'y', z: 'z'})
+      app.option('foo', {x: 'x', y: 'y', z: 'z'});
       app.option('bar', {a: 'a', b: 'b', c: 'c'});
       assert(app.option('bar').hasOwnProperty('a'));
       assert(app.option('bar').hasOwnProperty('b'));

@@ -4,30 +4,30 @@ var assert = require('assert');
 var Options = require('..');
 var app;
 
-describe('#enabled', function () {
+describe('#enabled', function() {
   beforeEach(function() {
     app = new Options();
   });
 
-  describe('#enable()', function () {
-    it('should set the value to true', function () {
+  describe('#enable()', function() {
+    it('should set the value to true', function() {
       app.enable('a');
       assert(app.options.a === true);
     });
 
-    it('should enable a nested value', function () {
+    it('should enable a nested value', function() {
       app.enable('a.b.c');
       assert(app.options.a.b.c === true);
     });
 
-    it('should support array syntax', function () {
+    it('should support array syntax', function() {
       app.enable(['a', 'b', 'c']);
       assert(app.options.a.b.c === true);
     });
   });
 
-  describe('#enabled()', function () {
-    it('should default to false', function () {
+  describe('#enabled()', function() {
+    it('should default to false', function() {
       // make sure it's disabled
       assert(!app.enabled('a'));
       // enable it
@@ -35,12 +35,12 @@ describe('#enabled', function () {
       assert(app.enabled('a'));
     });
 
-    it('should return true when any value is set', function () {
+    it('should return true when any value is set', function() {
       app.option('a', 'b');
       assert(app.enabled('a'));
     });
 
-    it('should return true when set', function () {
+    it('should return true when set', function() {
       app.option('a', false);
       assert(!app.enabled('a'));
     });
