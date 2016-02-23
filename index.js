@@ -7,9 +7,9 @@
 
 'use strict';
 
-var Option = require('./option');
 var Emitter = require('component-emitter');
-var utils = require('./utils');
+var Option = require('./lib/option');
+var utils = require('./lib/utils');
 
 /**
  * Create a new instance of `Options`.
