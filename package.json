@@ -25,7 +25,6 @@
     "arr-flatten": "^1.0.1",
     "collection-visit": "^0.2.1",
     "component-emitter": "^1.2.0",
-    "define-property": "^0.2.5",
     "get-value": "^2.0.3",
     "has-value": "^0.3.0",
     "kind-of": "^3.0.2",

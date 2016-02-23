@@ -11,7 +11,6 @@ require = utils;
 require('arr-flatten', 'flatten');
 require('to-object-path', 'toPath');
 require('collection-visit', 'visit');
-require('define-property', 'define');
 require('get-value', 'get');
 require('set-value', 'set');
 require('has-value', 'has');

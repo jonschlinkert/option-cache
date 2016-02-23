@@ -45,7 +45,7 @@ App.prototype.b = function(value) {
 
 ## API
 
-### [Options](index.js#L25)
+### [Options](index.js#L24)
 
 Create a new instance of `Options`.
 
@@ -59,7 +59,7 @@ Create a new instance of `Options`.
 var app = new Options();
 ```
 
-### [.option](index.js#L54)
+### [.option](index.js#L56)
 
 Set or get an option.
 
@@ -69,10 +69,6 @@ Set or get an option.
 * `value` **{any}**: The value to set.
 * `returns` **{any}**: Returns a `value` when only `key` is defined.
 
-**Events**
-
-* `emits`: `option` with `key` and `value`, or if an object is passed, an event is emitted for each key in the object.
-
 **Example**
 
 ```js
@@ -81,41 +77,15 @@ app.option('a');
 //=> true
 ```
 
-### [.setOption](index.js#L82)
-
-Set option `key` with the given `value`.
-
-**Params**
-
-* `key` **{String}**
-* `val` **{any}**
-
-**Example**
-
-```js
-app.setOption('a', 'b');
-// or
-app.setOption({a: 'b'});
-```
-
-### [.getOption](index.js#L99)
-
-Get option `key`
+Merge an object, list of objects, or array of objects,
+onto the `app.options`.
 
 **Params**
 
-* `key` **{String}**
-* `val` **{any}**
+* `options` **{Object}**
+* `returns` **{Object}**
 
-**Example**
-
-```js
-app.setOption('a', 'b');
-var opt = app.getOption('a');
-//=> 'b'
-```
-
-### [.hasOption](index.js#L119)
+### [.hasOption](index.js#L130)
 
 Return true if `options.hasOwnProperty(key)`
 
@@ -134,7 +104,7 @@ app.hasOption('a');
 //=> true
 ```
 
-### [.enable](index.js#L138)
+### [.enable](index.js#L149)
 
 Enable `key`.
 
@@ -149,7 +119,7 @@ Enable `key`.
 app.enable('a');
 ```
 
-### [.disable](index.js#L155)
+### [.disable](index.js#L166)
 
 Disable `key`.
 
@@ -164,7 +134,7 @@ Disable `key`.
 app.disable('a');
 ```
 
-### [.enabled](index.js#L177)
+### [.enabled](index.js#L188)
 
 Check if `prop` is enabled (truthy).
 
@@ -184,7 +154,7 @@ app.enabled('a');
 //=> true
 ```
 
-### [.disabled](index.js#L198)
+### [.disabled](index.js#L210)
 
 Check if `prop` is disabled (falsey).
 
@@ -204,7 +174,7 @@ app.disabled('a');
 //=> false
 ```
 
-### [.isTrue](index.js#L224)
+### [.isTrue](index.js#L237)
 
 Returns true if the value of `prop` is strictly `true`.
 
@@ -229,7 +199,7 @@ app.isTrue('a.b.c');
 //=> true
 ```
 
-### [.isFalse](index.js#L250)
+### [.isFalse](index.js#L264)
 
 Returns true if the value of `key` is strictly `false`.
 
@@ -254,7 +224,7 @@ app.isFalse('a.b.c');
 //=> true
 ```
 
-### [.isBoolean](index.js#L273)
+### [.isBoolean](index.js#L288)
 
 Return true if the value of key is either `true` or `false`.
 
