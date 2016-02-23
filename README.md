@@ -1,226 +1,14 @@
-# option-cache [![NPM version](https://badge.fury.io/js/option-cache.svg)](http://badge.fury.io/js/option-cache)  [![Build Status](https://travis-ci.org/jonschlinkert/option-cache.svg)](https://travis-ci.org/jonschlinkert/option-cache)
+# option-cache [![NPM version](https://img.shields.io/npm/v/option-cache.svg)](https://www.npmjs.com/package/option-cache) [![Build Status](https://img.shields.io/travis/jonschlinkert/option-cache.svg)](https://travis-ci.org/jonschlinkert/option-cache)
 
 > Simple API for managing options in JavaScript applications.
 
 ## Install
 
-Install with [npm](https://www.npmjs.com/)
+Install with [npm](https://www.npmjs.com/):
 
 ```sh
 $ npm i option-cache --save
 ```
-
-## Docs
-
-- [API](#api)
-- [Example app](#example-app)
-- [Related](#related)
-- [Contributing](#contributing)
-- [Running tests](#running-tests)
-- [Coverage](#coverage)
-- [Changelog](#changelog)
-- [Author](#author)
-- [License](#license)
-
-## API
-
-### [Options](index.js#L24)
-
-Create a new instance of `Options`.
-
-**Params**
-
-* `options` **{Object}**: Initialize with default options.
-
-**Example**
-
-```js
-var app = new Options();
-```
-
-### [.option](index.js#L53)
-
-Set or get an option.
-
-**Params**
-
-* `key` **{String}**: The option name.
-* `value` **{any}**: The value to set.
-* `returns` **{any}**: Returns a `value` when only `key` is defined.
-
-**Example**
-
-```js
-app.option('a', true);
-app.option('a');
-//=> true
-```
-
-### [.hasOption](index.js#L103)
-
-Return true if `options.hasOwnProperty(key)`
-
-**Params**
-
-* `prop` **{String}**
-* `returns` **{Boolean}**: True if `prop` exists.
-
-**Example**
-
-```js
-app.hasOption('a');
-//=> false
-app.option('a', 'b');
-app.hasOption('a');
-//=> true
-```
-
-### [.enable](index.js#L122)
-
-Enable `key`.
-
-**Params**
-
-* `key` **{String}**
-* `returns` **{Object}** `Options`: to enable chaining
-
-**Example**
-
-```js
-app.enable('a');
-```
-
-### [.disable](index.js#L139)
-
-Disable `key`.
-
-**Params**
-
-* `key` **{String}**: The option to disable.
-* `returns` **{Object}** `Options`: to enable chaining
-
-**Example**
-
-```js
-app.disable('a');
-```
-
-### [.enabled](index.js#L161)
-
-Check if `prop` is enabled (truthy).
-
-**Params**
-
-* `prop` **{String}**
-* `returns` **{Boolean}**
-
-**Example**
-
-```js
-app.enabled('a');
-//=> false
-
-app.enable('a');
-app.enabled('a');
-//=> true
-```
-
-### [.disabled](index.js#L183)
-
-Check if `prop` is disabled (falsey).
-
-**Params**
-
-* `prop` **{String}**
-* `returns` **{Boolean}**: Returns true if `prop` is disabled.
-
-**Example**
-
-```js
-app.disabled('a');
-//=> true
-
-app.enable('a');
-app.disabled('a');
-//=> false
-```
-
-### [.isTrue](index.js#L210)
-
-Returns true if the value of `prop` is strictly `true`.
-
-**Params**
-
-* `prop` **{String}**
-* `returns` **{Boolean}**: Uses strict equality for comparison.
-
-**Example**
-
-```js
-app.option('a', 'b');
-app.isTrue('a');
-//=> false
-
-app.option('c', true);
-app.isTrue('c');
-//=> true
-
-app.option({a: {b: {c: true}}});
-app.isTrue('a.b.c');
-//=> true
-```
-
-### [.isFalse](index.js#L237)
-
-Returns true if the value of `key` is strictly `false`.
-
-**Params**
-
-* `prop` **{String}**
-* `returns` **{Boolean}**: Uses strict equality for comparison.
-
-**Example**
-
-```js
-app.option('a', null);
-app.isFalse('a');
-//=> false
-
-app.option('c', false);
-app.isFalse('c');
-//=> true
-
-app.option({a: {b: {c: false}}});
-app.isFalse('a.b.c');
-//=> true
-```
-
-### [.isBoolean](index.js#L261)
-
-Return true if the value of key is either `true` or `false`.
-
-**Params**
-
-* `key` **{String}**
-* `returns` **{Boolean}**: True if `true` or `false`.
-
-**Example**
-
-```js
-app.option('a', 'b');
-app.isBoolean('a');
-//=> false
-
-app.option('c', true);
-app.isBoolean('c');
-//=> true
-```
-
-<br>
-
-***
-
-<br>
 
 ## Example app
 
@@ -255,25 +43,262 @@ App.prototype.b = function(value) {
 };
 ```
 
-<br>
+## API
 
-***
+### [Options](index.js#L25)
 
-<br>
+Create a new instance of `Options`.
 
-## Related
+**Params**
 
-* [cache-base](https://www.npmjs.com/package/cache-base): Generic object cache for node.js/javascript projects. | [homepage](https://github.com/jonschlinkert/cache-base)
+* `options` **{Object}**: Initialize with default options.
+
+**Example**
+
+```js
+var app = new Options();
+```
+
+### [.option](index.js#L54)
+
+Set or get an option.
+
+**Params**
+
+* `key` **{String}**: The option name.
+* `value` **{any}**: The value to set.
+* `returns` **{any}**: Returns a `value` when only `key` is defined.
+
+**Events**
+
+* `emits`: `option` with `key` and `value`, or if an object is passed, an event is emitted for each key in the object.
+
+**Example**
+
+```js
+app.option('a', true);
+app.option('a');
+//=> true
+```
+
+### [.setOption](index.js#L82)
+
+Set option `key` with the given `value`.
+
+**Params**
+
+* `key` **{String}**
+* `val` **{any}**
+
+**Example**
+
+```js
+app.setOption('a', 'b');
+// or
+app.setOption({a: 'b'});
+```
+
+### [.getOption](index.js#L99)
+
+Get option `key`
+
+**Params**
+
+* `key` **{String}**
+* `val` **{any}**
+
+**Example**
+
+```js
+app.setOption('a', 'b');
+var opt = app.getOption('a');
+//=> 'b'
+```
+
+### [.hasOption](index.js#L119)
+
+Return true if `options.hasOwnProperty(key)`
+
+**Params**
+
+* `prop` **{String}**
+* `returns` **{Boolean}**: True if `prop` exists.
+
+**Example**
+
+```js
+app.hasOption('a');
+//=> false
+app.option('a', 'b');
+app.hasOption('a');
+//=> true
+```
+
+### [.enable](index.js#L138)
+
+Enable `key`.
+
+**Params**
+
+* `key` **{String}**
+* `returns` **{Object}** `Options`: to enable chaining
+
+**Example**
+
+```js
+app.enable('a');
+```
+
+### [.disable](index.js#L155)
+
+Disable `key`.
+
+**Params**
+
+* `key` **{String}**: The option to disable.
+* `returns` **{Object}** `Options`: to enable chaining
+
+**Example**
+
+```js
+app.disable('a');
+```
+
+### [.enabled](index.js#L177)
+
+Check if `prop` is enabled (truthy).
+
+**Params**
+
+* `prop` **{String}**
+* `returns` **{Boolean}**
+
+**Example**
+
+```js
+app.enabled('a');
+//=> false
+
+app.enable('a');
+app.enabled('a');
+//=> true
+```
+
+### [.disabled](index.js#L198)
+
+Check if `prop` is disabled (falsey).
+
+**Params**
+
+* `prop` **{String}**
+* `returns` **{Boolean}**: Returns true if `prop` is disabled.
+
+**Example**
+
+```js
+app.disabled('a');
+//=> true
+
+app.enable('a');
+app.disabled('a');
+//=> false
+```
+
+### [.isTrue](index.js#L224)
+
+Returns true if the value of `prop` is strictly `true`.
+
+**Params**
+
+* `prop` **{String}**
+* `returns` **{Boolean}**: Uses strict equality for comparison.
+
+**Example**
+
+```js
+app.option('a', 'b');
+app.isTrue('a');
+//=> false
+
+app.option('c', true);
+app.isTrue('c');
+//=> true
+
+app.option({a: {b: {c: true}}});
+app.isTrue('a.b.c');
+//=> true
+```
+
+### [.isFalse](index.js#L250)
+
+Returns true if the value of `key` is strictly `false`.
+
+**Params**
+
+* `prop` **{String}**
+* `returns` **{Boolean}**: Uses strict equality for comparison.
+
+**Example**
+
+```js
+app.option('a', null);
+app.isFalse('a');
+//=> false
+
+app.option('c', false);
+app.isFalse('c');
+//=> true
+
+app.option({a: {b: {c: false}}});
+app.isFalse('a.b.c');
+//=> true
+```
+
+### [.isBoolean](index.js#L273)
+
+Return true if the value of key is either `true` or `false`.
+
+**Params**
+
+* `key` **{String}**
+* `returns` **{Boolean}**: True if `true` or `false`.
+
+**Example**
+
+```js
+app.option('a', 'b');
+app.isBoolean('a');
+//=> false
+
+app.option('c', true);
+app.isBoolean('c');
+//=> true
+```
+
+## Related projects
+
+* [base](https://www.npmjs.com/package/base): base is the foundation for creating modular, unit testable and highly pluggable node.js applications, starting… [more](https://www.npmjs.com/package/base) | [homepage](https://github.com/node-base/base)
+* [cache-base](https://www.npmjs.com/package/cache-base): Basic object cache with `get`, `set`, `del`, and `has` methods for node.js/javascript projects. | [homepage](https://github.com/jonschlinkert/cache-base)
 * [config-cache](https://www.npmjs.com/package/config-cache): General purpose JavaScript object storage methods. | [homepage](https://github.com/jonschlinkert/config-cache)
-* [engine-cache](https://www.npmjs.com/package/engine-cache): express.js inspired template-engine manager. | [homepage](https://github.com/jonschlinkert/engine-cache)
-* [helper-cache](https://www.npmjs.com/package/helper-cache): Easily register and get helper functions to be passed to any template engine or node.js… [more](https://www.npmjs.com/package/helper-cache) | [homepage](https://github.com/jonschlinkert/helper-cache)
-* [loader-cache](https://www.npmjs.com/package/loader-cache): Register loader functions that dynamically read, parse or otherwise transform file contents when the name… [more](https://www.npmjs.com/package/loader-cache) | [homepage](https://github.com/jonschlinkert/loader-cache)
 * [map-cache](https://www.npmjs.com/package/map-cache): Basic cache object for storing key-value pairs. | [homepage](https://github.com/jonschlinkert/map-cache)
-* [parser-cache](https://www.npmjs.com/package/parser-cache): Cache and load parsers, similiar to consolidate.js engines. | [homepage](https://github.com/jonschlinkert/parser-cache)
 
 ## Contributing
 
 Pull requests and stars are always welcome. For bugs and feature requests, [please create an issue](https://github.com/jonschlinkert/option-cache/issues/new).
+
+## Building docs
+
+Generate readme and API documentation with [verb](https://github.com/verbose/verb):
+
+```sh
+$ npm i verb && npm run docs
+```
+
+Or, if [verb](https://github.com/verbose/verb) is installed globally:
+
+```sh
+$ verb
+```
 
 ## Running tests
 
@@ -283,18 +308,7 @@ Install dev dependencies:
 $ npm i -d && npm test
 ```
 
-## Coverage
-
-As of October 29, 2015:
-
-```sh
-Statements : 100% (45/45)
-Branches   : 100% (18/18)
-Functions  : 100% (11/11)
-Lines      : 100% (45/45)
-```
-
-## Changelog
+# Changelog
 
 **v3.0.0**
 
@@ -311,16 +325,14 @@ Lines      : 100% (45/45)
 
 **Jon Schlinkert**
 
-+ [github/jonschlinkert](https://github.com/jonschlinkert)
-+ [twitter/jonschlinkert](http://twitter.com/jonschlinkert)
+* [github/jonschlinkert](https://github.com/jonschlinkert)
+* [twitter/jonschlinkert](http://twitter.com/jonschlinkert)
 
 ## License
 
-Copyright © 2015 Jon Schlinkert
-Released under the MIT license.
+Copyright © 2016 [Jon Schlinkert](https://github.com/jonschlinkert)
+Released under the [MIT license](https://github.com/jonschlinkert/option-cache/blob/master/LICENSE).
 
 ***
 
-_This file was generated by [verb-cli](https://github.com/assemble/verb-cli) on October 29, 2015._
-
-<!-- deps:mocha -->
+_This file was generated by [verb](https://github.com/verbose/verb), v0.9.0, on February 23, 2016._
