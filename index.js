@@ -84,6 +84,13 @@ Options.prototype = Emitter({
    * Merge an object, list of objects, or array of objects,
    * onto the `app.options`.
    *
+   * ```js
+   * app.mergeOptions({a: 'b'}, {c: 'd'});
+   * app.option('a');
+   * //=> 'b'
+   * app.option('c');
+   * //=> 'd'
+   * ```
    * @param {Object} `options`
    * @return {Object}
    * @api public
@@ -106,6 +113,48 @@ Options.prototype = Emitter({
           this.emit('option', key, val);
           utils.set(this.options, key, val);
         }
+      }
+    }
+    return this;
+  },
+
+  /**
+   * Set option `key` with the given `value`, but only if `key` is not
+   * already defined or the currently defined value isn't the same type
+   * as the javascript native `type` (optionally) passed as the third
+   * argument.
+   *
+   * ```js
+   * app.option('a', 'b');
+   *
+   * app.fillin('a', 'z');
+   * app.fillin('x', 'y');
+   *
+   * app.option('a');
+   * //=> 'b'
+   * app.option('x');
+   * //=> 'y'
+   * ```
+   * @param {String} `key`
+   * @param {any} `value`
+   * @param {String} `type` Javascript native type (optional)
+   * @return {Object}
+   * @api public
+   */
+
+  fillin: function(key, value, type) {
+    if (utils.typeOf(key) === 'object') {
+      var obj = key;
+
+      for (var prop in obj) {
+        if (obj.hasOwnProperty(prop)) {
+          this.fillin(prop, obj[prop], type);
+        }
+      }
+    } else {
+      var val = this.option(key);
+      if (typeof val === 'undefined' || (typeof type === 'string' && utils.typeOf(val) !== type)) {
+        this.option(key, value);
       }
     }
     return this;
