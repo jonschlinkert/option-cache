@@ -54,6 +54,7 @@ Options.prototype = Emitter({
    */
 
   option: function(key, value) {
+    if (typeof key === 'undefined') return;
     if (Array.isArray(key)) {
       if (arguments.length > 1) {
         key = utils.toPath(key);
