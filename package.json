@@ -1,7 +1,7 @@
 {
   "name": "option-cache",
   "description": "Simple API for managing options in JavaScript applications.",
-  "version": "3.3.5",
+  "version": "3.4.0",
   "homepage": "https://github.com/jonschlinkert/option-cache",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
   "repository": "jonschlinkert/option-cache",
@@ -80,16 +80,7 @@
   "verb": {
     "run": true,
     "toc": false,
-    "layout": {
-      "name": "default",
-      "sections": [
-        {
-          "heading": "author",
-          "placement": "before",
-          "contents": "{%= doc('CHANGELOG.md') %}"
-        }
-      ]
-    },
+    "layout": "default",
     "tasks": [
       "readme"
     ],
@@ -105,7 +96,8 @@
       ]
     },
     "reflinks": [
-      "verb"
+      "verb",
+      "verb-readme-generator"
     ]
   }
 }
