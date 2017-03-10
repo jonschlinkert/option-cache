@@ -117,6 +117,10 @@ describe('#option()', function() {
       app = new Options();
     });
 
+    it('should return undefined when key is not specified', function() {
+      assert.equal(typeof app.option(), 'undefined');
+    });
+
     it('should get an option.', function() {
       app.option('a', 'b');
       assert.equal(app.option('a'), 'b');

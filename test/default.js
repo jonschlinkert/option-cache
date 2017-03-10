@@ -52,19 +52,14 @@ describe('#default()', function() {
       assert.deepEqual(app.default('a'), {b: 'c'});
     });
 
-    it('should support passing an array as the key', function() {
-      app.default({a: {b: {c: 'd'}}});
-      assert.equal(app.default(['a', 'b', 'c']), 'd');
-    });
-
     it('should set a nested property.', function() {
       app.default('a.b.c', {d: 'e'});
       assert.deepEqual(app.defaults.a, {b: {c: {d: 'e'}}});
     });
 
-    it('should get a nested property.', function() {
-      app.default('a.b.c', {d: 'e'});
-      assert.deepEqual(app.default('a.b.c.d'), 'e');
+    it('should support passing an array as the key', function() {
+      app.default(['a', 'b'], {c: 'd'});
+      assert.equal(app.default(['a', 'b', 'c']), 'd');
     });
 
     it('should set a default from an object.', function() {
@@ -117,6 +112,10 @@ describe('#default()', function() {
       app = new Options();
     });
 
+    it('should return undefined when key is not specified', function() {
+      assert.equal(typeof app.default(), 'undefined');
+    });
+
     it('should get a default.', function() {
       app.default('a', 'b');
       assert.equal(app.default('a'), 'b');
@@ -127,6 +126,11 @@ describe('#default()', function() {
       assert.deepEqual(app.default('a'), {b: {c: {d: 'e'}}});
       assert.deepEqual(app.default('a.b'), {c: {d: 'e'}});
       assert.deepEqual(app.default('a.b.c'), {d: 'e'});
+    });
+
+    it('should support passing an array as the key', function() {
+      app.default({a: {b: {c: 'd'}}});
+      assert.equal(app.default(['a', 'b', 'c']), 'd');
     });
 
     it('should get a default value if option is not set', function() {
