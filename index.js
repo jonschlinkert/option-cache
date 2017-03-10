@@ -234,6 +234,29 @@ Options.prototype = Emitter({
   },
 
   /**
+   * Return true if `defaults.hasOwnProperty(key)`
+   *
+   * ```js
+   * app.hasDefault('a');
+   * //=> false
+   * app.default('a', 'b');
+   * app.hasDefault('a');
+   * //=> true
+   * ```
+   * @name .hasDefault
+   * @param {String} `key`
+   * @return {Boolean} True if `key` exists.
+   * @api public
+   */
+
+  hasDefault: function(key) {
+    var prop = utils.toPath(arguments);
+    return prop.indexOf('.') === -1
+      ? this.defaults.hasOwnProperty(prop)
+      : utils.has(this.defaults, prop);
+  },
+
+  /**
    * Enable `key`.
    *
    * ```js
