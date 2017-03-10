@@ -32,7 +32,9 @@
     "get-value": "^2.0.6",
     "has-value": "^0.3.1",
     "kind-of": "^3.0.3",
+    "koalas": "^1.0.1",
     "lazy-cache": "^2.0.1",
+    "merge-deep": "^3.0.0",
     "set-value": "^0.3.3",
     "to-object-path": "^0.3.0"
   },
