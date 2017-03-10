@@ -83,9 +83,20 @@ Options.prototype = Emitter({
   },
 
   default: function(prop, val) {
+    if (utils.typeOf(prop) === 'array') {
+      if (arguments.length > 1) {
+        prop = utils.toPath(prop);
+      } else if (typeof prop[0] === 'string') {
+        prop = utils.toPath(arguments);
+      }
+    }
+
     switch (utils.typeOf(prop)) {
       case 'object':
-        this.defaults = utils.merge({}, this.defaults, prop);
+        this.defaults = utils.merge.apply(null, [{}, this.defaults].concat([].slice.call(arguments)));
+        return this;
+      case 'array':
+        this.defaults = utils.merge.apply(null, [{}, this.defaults].concat(prop));
         return this;
       case 'string':
         if (typeof val !== 'undefined') {
@@ -94,7 +105,7 @@ Options.prototype = Emitter({
         }
         return utils.get(this.defaults, prop);
       default: {
-        throw new TypeError('expected a string or object');
+        throw new TypeError('expected default to be a string or object');
       }
     }
   },

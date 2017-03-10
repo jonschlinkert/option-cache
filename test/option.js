@@ -128,6 +128,21 @@ describe('#option()', function() {
       assert.deepEqual(app.option('a.b'), {c: {d: 'e'}});
       assert.deepEqual(app.option('a.b.c'), {d: 'e'});
     });
+
+    it('should get a default value if option is not set', function() {
+      app.option({a: 'aaa', b: 'bbb', c: 'ccc'});
+      app.default({a: 'AAA', x: 'xxx', y: 'yyy', z: 'zzz'});
+      assert.equal(app.option('a'), 'aaa');
+      assert.equal(app.option('x'), 'xxx');
+    });
+
+    it('should get a nested default value if the option is not set', function() {
+      app.option('a.b.c', {d: 'e'});
+      app.default('z.y.x', {w: 'v'});
+      assert.deepEqual(app.option('z'), {y: {x: {w: 'v'}}});
+      assert.deepEqual(app.option('z.y'), {x: {w: 'v'}});
+      assert.deepEqual(app.option('z.y.x'), {w: 'v'});
+    });
   });
 
   describe('extend', function() {
