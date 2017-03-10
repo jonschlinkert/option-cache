@@ -26,6 +26,7 @@ function Options(options) {
     return new Options(options);
   }
   this.options = this.options || {};
+  this.defaults = this.defaults || {};
   if (options) {
     this.option(options);
   }
@@ -66,7 +67,7 @@ Options.prototype = Emitter({
 
     if (typeof key === 'string') {
       if (arguments.length === 1) {
-        return utils.get(this.options, key);
+        return utils.koalas(utils.get(this.options, prop), utils.get(this.defaults, prop));
       }
       utils.set(this.options, key, value);
       this.emit('option', key, value);
@@ -79,6 +80,23 @@ Options.prototype = Emitter({
       throw new TypeError(msg);
     }
     return this.mergeOptions.apply(this, arguments);
+  },
+
+  default: function(prop, val) {
+    switch (utils.typeOf(prop)) {
+      case 'object':
+        this.defaults = utils.merge({}, this.defaults, prop);
+        return this;
+      case 'string':
+        if (typeof val !== 'undefined') {
+          utils.set(this.defaults, prop, val);
+          return this;
+        }
+        return utils.get(this.defaults, prop);
+      default: {
+        throw new TypeError('expected a string or object');
+      }
+    }
   },
 
   /**

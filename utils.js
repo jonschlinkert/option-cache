@@ -9,12 +9,14 @@ var fn = require;
 
 require = utils;
 require('arr-flatten', 'flatten');
-require('to-object-path', 'toPath');
 require('collection-visit', 'visit');
 require('get-value', 'get');
-require('set-value', 'set');
 require('has-value', 'has');
 require('kind-of', 'typeOf');
+require('koalas');
+require('merge-deep', 'merge');
+require('set-value', 'set');
+require('to-object-path', 'toPath');
 require = fn;
 
 /**
