@@ -40,12 +40,16 @@ Options.prototype = Emitter({
   constructor: Options,
 
   /**
-   * Set or get an option.
+   * Set or get an option. When getting an option that is not set but has a default value set,
+   * the default value will be returned.
    *
    * ```js
    * app.option('a', true);
    * app.option('a');
    * //=> true
+   * app.default('b', false);
+   * app.option('b');
+   * //=> false
    * ```
    * @name .option
    * @param {String} `key` The option name.
@@ -82,28 +86,44 @@ Options.prototype = Emitter({
     return this.mergeOptions.apply(this, arguments);
   },
 
-  default: function(prop, val) {
-    if (utils.typeOf(prop) === 'array') {
+  /**
+   * Set or get a default.
+   *
+   * ```js
+   * app.default('a', true);
+   * app.default('a');
+   * //=> true
+   * ```
+   * @name .default
+   * @param {String} `key` The default name.
+   * @param {*} `value` The value to set.
+   * @return {*} Returns a `value` when only `key` is defined.
+   * @api public
+   */
+
+  default: function(key, value) {
+    if (utils.typeOf(key) === 'array') {
       if (arguments.length > 1) {
-        prop = utils.toPath(prop);
-      } else if (typeof prop[0] === 'string') {
-        prop = utils.toPath(arguments);
+        key = utils.toPath(key);
+      } else if (typeof key[0] === 'string') {
+        key = utils.toPath(arguments);
       }
     }
 
-    switch (utils.typeOf(prop)) {
+    switch (utils.typeOf(key)) {
       case 'object':
         this.defaults = utils.merge.apply(null, [{}, this.defaults].concat([].slice.call(arguments)));
         return this;
       case 'array':
-        this.defaults = utils.merge.apply(null, [{}, this.defaults].concat(prop));
+        this.defaults = utils.merge.apply(null, [{}, this.defaults].concat(key));
         return this;
       case 'string':
-        if (typeof val !== 'undefined') {
-          utils.set(this.defaults, prop, val);
+        if (typeof value !== 'undefined') {
+          utils.set(this.defaults, key, value);
+          this.emit('default', key, value);
           return this;
         }
-        return utils.get(this.defaults, prop);
+        return utils.get(this.defaults, key);
       default: {
         throw new TypeError('expected default to be a string or object');
       }
