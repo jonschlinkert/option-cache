@@ -67,7 +67,7 @@ Options.prototype = Emitter({
 
     if (typeof key === 'string') {
       if (arguments.length === 1) {
-        return utils.koalas(utils.get(this.options, prop), utils.get(this.defaults, prop));
+        return utils.defaults(this, key);
       }
       utils.set(this.options, key, value);
       this.emit('option', key, value);
