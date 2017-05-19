@@ -1,6 +1,6 @@
-# option-cache [![NPM version](https://img.shields.io/npm/v/option-cache.svg?style=flat)](https://www.npmjs.com/package/option-cache) [![NPM downloads](https://img.shields.io/npm/dm/option-cache.svg?style=flat)](https://npmjs.org/package/option-cache) [![Build Status](https://img.shields.io/travis/jonschlinkert/option-cache.svg?style=flat)](https://travis-ci.org/jonschlinkert/option-cache)
+# option-cache [![NPM version](https://img.shields.io/npm/v/option-cache.svg?style=flat)](https://www.npmjs.com/package/option-cache) [![NPM monthly downloads](https://img.shields.io/npm/dm/option-cache.svg?style=flat)](https://npmjs.org/package/option-cache) [![NPM total downloads](https://img.shields.io/npm/dt/option-cache.svg?style=flat)](https://npmjs.org/package/option-cache) [![Linux Build Status](https://img.shields.io/travis/jonschlinkert/option-cache.svg?style=flat&label=Travis)](https://travis-ci.org/jonschlinkert/option-cache)
 
-Simple API for managing options in JavaScript applications.
+> Simple API for managing options in JavaScript applications.
 
 ## Install
 
@@ -59,7 +59,7 @@ Create a new instance of `Options`.
 var app = new Options();
 ```
 
-### [.option](index.js#L56)
+### [.option](index.js#L57)
 
 Set or get an option.
 
@@ -77,19 +77,47 @@ app.option('a');
 //=> true
 ```
 
+### [.option](index.js#L108)
+
+Set or get a default value. Defaults are cached on the `.defaults` object.
+
 **Params**
 
-* `options` **{Object}**
+* `key` **{String}**: The option name.
+* `value` **{any}**: The value to set.
+* `returns` **{any}**: Returns a `value` when only `key` is defined.
+
+**Example**
+
+```js
+app.default('admin', false);
+app.default('admin');
+//=> false
+
+app.option('admin');
+//=> false
+
+app.option('admin', true);
+app.option('admin');
+//=> true
+```
+
+**Params**
+
+* `key` **{String}**
+* `value` **{any}**
+* `type` **{String}**: Javascript native type (optional)
 * `returns` **{Object}**
 
 **Example**
 
 ```js
-app.mergeOptions({a: 'b'}, {c: 'd'});
-app.option('a');
-//=> 'b'
-app.option('c');
-//=> 'd'
+app.option('admin', true);
+console.log(app.either('admin', false));
+//=> true
+
+console.log(app.either('collaborator', false));
+//=> false
 ```
 
 **Params**
@@ -113,7 +141,22 @@ app.option('x');
 //=> 'y'
 ```
 
-### [.hasOption](index.js#L180)
+**Params**
+
+* `options` **{Object}**
+* `returns` **{Object}**
+
+**Example**
+
+```js
+app.mergeOptions({a: 'b'}, {c: 'd'});
+app.option('a');
+//=> 'b'
+app.option('c');
+//=> 'd'
+```
+
+### [.hasOption](index.js#L240)
 
 Return true if `options.hasOwnProperty(key)`
 
@@ -132,7 +175,7 @@ app.hasOption('a');
 //=> true
 ```
 
-### [.enable](index.js#L199)
+### [.enable](index.js#L259)
 
 Enable `key`.
 
@@ -147,7 +190,7 @@ Enable `key`.
 app.enable('a');
 ```
 
-### [.disable](index.js#L216)
+### [.disable](index.js#L276)
 
 Disable `key`.
 
@@ -162,7 +205,7 @@ Disable `key`.
 app.disable('a');
 ```
 
-### [.enabled](index.js#L238)
+### [.enabled](index.js#L298)
 
 Check if `prop` is enabled (truthy).
 
@@ -182,7 +225,7 @@ app.enabled('a');
 //=> true
 ```
 
-### [.disabled](index.js#L260)
+### [.disabled](index.js#L320)
 
 Check if `prop` is disabled (falsey).
 
@@ -202,7 +245,7 @@ app.disabled('a');
 //=> false
 ```
 
-### [.isTrue](index.js#L287)
+### [.isTrue](index.js#L347)
 
 Returns true if the value of `prop` is strictly `true`.
 
@@ -227,7 +270,7 @@ app.isTrue('a.b.c');
 //=> true
 ```
 
-### [.isFalse](index.js#L314)
+### [.isFalse](index.js#L374)
 
 Returns true if the value of `key` is strictly `false`.
 
@@ -252,7 +295,7 @@ app.isFalse('a.b.c');
 //=> true
 ```
 
-### [.isBoolean](index.js#L338)
+### [.isBoolean](index.js#L398)
 
 Return true if the value of key is either `true` or `false`.
 
@@ -273,53 +316,56 @@ app.isBoolean('c');
 //=> true
 ```
 
-## Related projects
+## About
 
-You might also be interested in these projects:
+### Related projects
 
-* [base](https://www.npmjs.com/package/base): base is the foundation for creating modular, unit testable and highly pluggable node.js applications, starting… [more](https://github.com/node-base/base) | [homepage](https://github.com/node-base/base "base is the foundation for creating modular, unit testable and highly pluggable node.js applications, starting with a handful of common methods, like `set`, `get`, `del` and `use`.")
+* [base](https://www.npmjs.com/package/base): Framework for rapidly creating high quality node.js applications, using plugins like building blocks | [homepage](https://github.com/node-base/base "Framework for rapidly creating high quality node.js applications, using plugins like building blocks")
 * [cache-base](https://www.npmjs.com/package/cache-base): Basic object cache with `get`, `set`, `del`, and `has` methods for node.js/javascript projects. | [homepage](https://github.com/jonschlinkert/cache-base "Basic object cache with `get`, `set`, `del`, and `has` methods for node.js/javascript projects.")
 * [config-cache](https://www.npmjs.com/package/config-cache): General purpose JavaScript object storage methods. | [homepage](https://github.com/jonschlinkert/config-cache "General purpose JavaScript object storage methods.")
 * [map-cache](https://www.npmjs.com/package/map-cache): Basic cache object for storing key-value pairs. | [homepage](https://github.com/jonschlinkert/map-cache "Basic cache object for storing key-value pairs.")
 
-## Contributing
-
-This document was generated by [verb-readme-generator](https://github.com/verbose/verb-readme-generator) (a [verb](https://github.com/verbose/verb) generator), please don't edit directly. Any changes to the readme must be made in [.verb.md](.verb.md). See [Building Docs](#building-docs).
+### Contributing
 
 Pull requests and stars are always welcome. For bugs and feature requests, [please create an issue](../../issues/new).
 
-Or visit the [verb-readme-generator](https://github.com/verbose/verb-readme-generator) project to submit bug reports or pull requests for the readme layout template.
+### Contributors
 
-## Building docs
+| **Commits** | **Contributor** | 
+| --- | --- |
+| 91 | [jonschlinkert](https://github.com/jonschlinkert) |
+| 2 | [tunnckoCore](https://github.com/tunnckoCore) |
 
-_(This document was generated by [verb-readme-generator](https://github.com/verbose/verb-readme-generator) (a [verb](https://github.com/verbose/verb) generator), please don't edit the readme directly. Any changes to the readme must be made in [.verb.md](.verb.md).)_
+### Building docs
 
-Generate readme and API documentation with [verb](https://github.com/verbose/verb):
+_(This project's readme.md is generated by [verb](https://github.com/verbose/verb-generate-readme), please don't edit the readme directly. Any changes to the readme must be made in the [.verb.md](.verb.md) readme template.)_
 
-```sh
-$ npm install -g verb verb-readme-generator && verb
-```
-
-## Running tests
-
-Install dev dependencies:
+To generate the readme, run the following command:
 
 ```sh
-$ npm install -d && npm test
+$ npm install -g verbose/verb#dev verb-generate-readme && verb
 ```
 
-## Author
+### Running tests
+
+Running and reviewing unit tests is a great way to get familiarized with a library and its API. You can install dependencies and run tests with the following command:
+
+```sh
+$ npm install && npm test
+```
+
+### Author
 
 **Jon Schlinkert**
 
 * [github/jonschlinkert](https://github.com/jonschlinkert)
-* [twitter/jonschlinkert](http://twitter.com/jonschlinkert)
+* [twitter/jonschlinkert](https://twitter.com/jonschlinkert)
 
-## License
+### License
 
-Copyright © 2016, [Jon Schlinkert](https://github.com/jonschlinkert).
-Released under the [MIT license](https://github.com/jonschlinkert/option-cache/blob/master/LICENSE).
+Copyright © 2017, [Jon Schlinkert](https://github.com/jonschlinkert).
+Released under the [MIT License](LICENSE).
 
 ***
 
-_This file was generated by [verb](https://github.com/verbose/verb), v0.9.0, on July 04, 2016._
+_This file was generated by [verb-generate-readme](https://github.com/verbose/verb-generate-readme), v0.6.0, on May 19, 2017._
