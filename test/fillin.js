@@ -29,16 +29,13 @@ describe('#fillin()', function() {
       app = new Options();
     });
 
-    it('should throw when invalid args are passed', function(done) {
-      try {
+    it('should throw when invalid args are passed', function() {
+      assert.throws(function() {
         app.fillin(null);
-        done(new Error('expected an error.'));
-      } catch (err) {
-        assert(err);
-        assert(err.message);
-        assert(err.message === 'expected option to be a string, object or array');
-        done();
-      }
+      }, /expected key to be a string, object or array/);
+      assert.throws(function() {
+        app.fillin(null);
+      }, TypeError);
     });
   });
 

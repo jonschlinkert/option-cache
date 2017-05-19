@@ -40,49 +40,6 @@ Options.prototype = Emitter({
   constructor: Options,
 
   /**
-   * Set or get an option.
-   *
-   * ```js
-   * app.option('a', true);
-   * app.option('a');
-   * //=> true
-   * ```
-   * @name .option
-   * @param {String} `key` The option name.
-   * @param {*} `value` The value to set.
-   * @return {*} Returns a `value` when only `key` is defined.
-   * @api public
-   */
-
-  option: function(key, value) {
-    if (typeof key === 'undefined') return;
-    if (Array.isArray(key)) {
-      if (arguments.length > 1) {
-        key = utils.toPath(key);
-
-      } else if (typeof key[0] === 'string') {
-        key = utils.toPath(arguments);
-      }
-    }
-
-    var type = utils.typeOf(key);
-    if (type === 'string') {
-      if (arguments.length === 1) {
-        return this.either(key, utils.get(this.defaults, key));
-      }
-      utils.set(this.options, key, value);
-      this.emit('option', key, value);
-      return this;
-    }
-
-    if (type !== 'object' && type !== 'array') {
-      var msg = 'expected option to be a string, object or array';
-      throw new TypeError(msg);
-    }
-    return this.mergeOptions.apply(this, arguments);
-  },
-
-  /**
    * Set or get a default value. Defaults are cached on the `.defaults`
    * object.
    *
@@ -105,21 +62,57 @@ Options.prototype = Emitter({
    * @api public
    */
 
-  default: function(prop, val) {
-    switch (utils.typeOf(prop)) {
+  default: function(key, value) {
+    switch (utils.typeOf(key)) {
       case 'object':
-        this.visit('default', prop);
-        return this;
+        this.visit('default', key);
+        break;
       case 'string':
-        if (typeof val !== 'undefined') {
-          utils.set(this.defaults, prop, val);
-          return this;
+        if (typeof value === 'undefined') {
+          return utils.get(this.defaults, key);
         }
-        return utils.get(this.defaults, prop);
+        utils.set(this.defaults, key, value);
+        break;
       default: {
         throw new TypeError('expected a string or object');
       }
     }
+    return this;
+  },
+
+  /**
+   * Set or get an option.
+   *
+   * ```js
+   * app.option('a', true);
+   * app.option('a');
+   * //=> true
+   * ```
+   * @name .option
+   * @param {String} `key` The option name.
+   * @param {*} `value` The value to set.
+   * @return {*} Returns a `value` when only `key` is defined.
+   * @api public
+   */
+
+  option: function(key, value) {
+    switch (utils.typeOf(key)) {
+      case 'object':
+        this.visit('option', key);
+        break;
+      case 'array':
+      case 'string':
+        if (typeof value === 'undefined') {
+          return this.either(key, utils.get(this.defaults, key));
+        }
+        this.emit('option', key, value);
+        utils.set(this.options, key, value);
+        break;
+      default: {
+        throw new TypeError('expected key to be a string, object or array');
+      }
+    }
+    return this;
   },
 
   /**
@@ -193,35 +186,6 @@ Options.prototype = Emitter({
   },
 
   /**
-   * Merge an object, list of objects, or array of objects,
-   * onto the `app.options`.
-   *
-   * ```js
-   * app.mergeOptions({a: 'b'}, {c: 'd'});
-   * app.option('a');
-   * //=> 'b'
-   * app.option('c');
-   * //=> 'd'
-   * ```
-   * @param {Object} `options`
-   * @return {Object}
-   * @api public
-   */
-
-  mergeOptions: function(options) {
-    var args = [].slice.call(arguments);
-    if (Array.isArray(options)) {
-      args = utils.flatten(args);
-    }
-
-    utils.mergeArray(args, function(val, key) {
-      this.emit('option', key, val);
-      utils.set(this.options, key, val);
-    }, this);
-    return this;
-  },
-
-  /**
    * Return true if `options.hasOwnProperty(key)`
    *
    * ```js
@@ -238,10 +202,7 @@ Options.prototype = Emitter({
    */
 
   hasOption: function(key) {
-    var prop = utils.toPath(arguments);
-    return prop.indexOf('.') === -1
-      ? this.options.hasOwnProperty(prop)
-      : utils.has(this.options, prop);
+    return utils.has(this.options, key);
   },
 
   /**
@@ -319,7 +280,7 @@ Options.prototype = Emitter({
 
   disabled: function(key) {
     var prop = utils.toPath(arguments);
-    return !Boolean(this.option(prop));
+    return !this.option(prop);
   },
 
   /**

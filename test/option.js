@@ -14,10 +14,6 @@ describe('#option()', function() {
       assert.equal(typeof app.option, 'function');
     });
 
-    it('should return if undefined', function() {
-      assert.equal(typeof app.option(), 'undefined');
-    });
-
     it('should be chainable.', function() {
       app
         .option({x: 'xxx', y: 'yyy', z: 'zzz'})
@@ -33,16 +29,13 @@ describe('#option()', function() {
       app = new Options();
     });
 
-    it('should throw when invalid args are passed', function(done) {
-      try {
+    it('should throw when invalid args are passed', function() {
+      assert.throws(function() {
         app.option(null);
-        done(new Error('expected an error.'));
-      } catch (err) {
-        assert(err);
-        assert(err.message);
-        assert(err.message === 'expected option to be a string, object or array');
-        done();
-      }
+      });
+      assert.throws(function() {
+        app.option();
+      });
     });
   });
 
@@ -78,33 +71,6 @@ describe('#option()', function() {
 
     it('should set properties from an object.', function() {
       app.option({a: 'b', c: 'd', e: 'f'});
-      assert(app.options.hasOwnProperty('a'));
-      assert(app.options.hasOwnProperty('c'));
-      assert(app.options.hasOwnProperty('e'));
-    });
-
-    it('should set a list of values', function() {
-      app.option({g: 'h'}, {i: 'j'}, {k: 'l'});
-      assert(app.options.hasOwnProperty('g'));
-      assert(app.options.g === 'h');
-      assert(app.options.hasOwnProperty('i'));
-      assert(app.options.i === 'j');
-      assert(app.options.hasOwnProperty('k'));
-      assert(app.options.k === 'l');
-    });
-
-    it('should set an array of values', function() {
-      app.option([{g: 'h'}, {i: 'j'}, {k: 'l'}]);
-      assert(app.options.hasOwnProperty('g'));
-      assert(app.options.g === 'h');
-      assert(app.options.hasOwnProperty('i'));
-      assert(app.options.i === 'j');
-      assert(app.options.hasOwnProperty('k'));
-      assert(app.options.k === 'l');
-    });
-
-    it('should set a list of options', function() {
-      app.option({a: 'b'}, {c: 'd'}, {e: 'f'});
       assert(app.options.hasOwnProperty('a'));
       assert(app.options.hasOwnProperty('c'));
       assert(app.options.hasOwnProperty('e'));

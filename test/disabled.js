@@ -13,17 +13,17 @@ describe('option disable', function() {
   describe('#disable()', function() {
     it('should set the value to false', function() {
       app.disable('a');
-      assert(app.options.a === false);
+      assert.equal(app.options.a, false);
     });
 
     it('should disable a nested value', function() {
       app.disable('a.b.c');
-      assert(app.options.a.b.c === false);
+      assert.equal(app.options.a.b.c, false);
     });
 
     it('should support array syntax', function() {
       app.disable(['a', 'b', 'c']);
-      assert(app.options.a.b.c === false);
+      assert.equal(app.options.a.b.c, false);
     });
   });
 

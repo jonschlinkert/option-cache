@@ -44,18 +44,5 @@ describe('events', function() {
       assert.equal(count, 3);
       cb();
     });
-
-    it('should each key from a list of objects.', function(cb) {
-      var count = 0;
-      var keys = [];
-      app.on('option', function(key) {
-        count++;
-        keys.push(key);
-      });
-      app.option({a: 'b'}, {c: 'd'}, {e: 'f'});
-      assert.deepEqual(keys, ['a', 'c', 'e']);
-      assert.equal(count, 3);
-      cb();
-    });
   });
 });
