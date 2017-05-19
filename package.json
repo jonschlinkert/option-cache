@@ -30,19 +30,19 @@
     "collection-visit": "^1.0.0",
     "component-emitter": "^1.2.1",
     "get-value": "^2.0.6",
-    "has-value": "^0.3.1",
+    "has-value": "^1.0.0",
     "kind-of": "^3.2.2",
     "lazy-cache": "^2.0.2",
-    "set-value": "^0.4.3",
+    "set-value": "^1.0.0",
     "to-object-path": "^0.3.0"
   },
   "devDependencies": {
+    "mocha": "^3.4.1",
     "gulp": "^3.9.1",
-    "gulp-eslint": "^3.0.1",
-    "gulp-format-md": "^0.1.12",
-    "gulp-istanbul": "^1.1.1",
     "gulp-mocha": "^3.0.1",
-    "mocha": "^3.4.1"
+    "gulp-istanbul": "^1.1.1",
+    "gulp-eslint": "^3.0.1",
+    "gulp-format-md": "^0.1.12"
   },
   "keywords": [
     "add",
