@@ -59,25 +59,7 @@ Create a new instance of `Options`.
 var app = new Options();
 ```
 
-### [.option](index.js#L57)
-
-Set or get an option.
-
-**Params**
-
-* `key` **{String}**: The option name.
-* `value` **{any}**: The value to set.
-* `returns` **{any}**: Returns a `value` when only `key` is defined.
-
-**Example**
-
-```js
-app.option('a', true);
-app.option('a');
-//=> true
-```
-
-### [.option](index.js#L108)
+### [.option](index.js#L65)
 
 Set or get a default value. Defaults are cached on the `.defaults` object.
 
@@ -99,6 +81,24 @@ app.option('admin');
 
 app.option('admin', true);
 app.option('admin');
+//=> true
+```
+
+### [.option](index.js#L98)
+
+Set or get an option.
+
+**Params**
+
+* `key` **{String}**: The option name.
+* `value` **{any}**: The value to set.
+* `returns` **{any}**: Returns a `value` when only `key` is defined.
+
+**Example**
+
+```js
+app.option('a', true);
+app.option('a');
 //=> true
 ```
 
@@ -141,22 +141,7 @@ app.option('x');
 //=> 'y'
 ```
 
-**Params**
-
-* `options` **{Object}**
-* `returns` **{Object}**
-
-**Example**
-
-```js
-app.mergeOptions({a: 'b'}, {c: 'd'});
-app.option('a');
-//=> 'b'
-app.option('c');
-//=> 'd'
-```
-
-### [.hasOption](index.js#L240)
+### [.hasOption](index.js#L204)
 
 Return true if `options.hasOwnProperty(key)`
 
@@ -175,7 +160,7 @@ app.hasOption('a');
 //=> true
 ```
 
-### [.enable](index.js#L259)
+### [.enable](index.js#L220)
 
 Enable `key`.
 
@@ -190,7 +175,7 @@ Enable `key`.
 app.enable('a');
 ```
 
-### [.disable](index.js#L276)
+### [.disable](index.js#L237)
 
 Disable `key`.
 
@@ -205,7 +190,7 @@ Disable `key`.
 app.disable('a');
 ```
 
-### [.enabled](index.js#L298)
+### [.enabled](index.js#L259)
 
 Check if `prop` is enabled (truthy).
 
@@ -225,7 +210,7 @@ app.enabled('a');
 //=> true
 ```
 
-### [.disabled](index.js#L320)
+### [.disabled](index.js#L281)
 
 Check if `prop` is disabled (falsey).
 
@@ -245,7 +230,7 @@ app.disabled('a');
 //=> false
 ```
 
-### [.isTrue](index.js#L347)
+### [.isTrue](index.js#L308)
 
 Returns true if the value of `prop` is strictly `true`.
 
@@ -270,7 +255,7 @@ app.isTrue('a.b.c');
 //=> true
 ```
 
-### [.isFalse](index.js#L374)
+### [.isFalse](index.js#L335)
 
 Returns true if the value of `key` is strictly `false`.
 
@@ -295,7 +280,7 @@ app.isFalse('a.b.c');
 //=> true
 ```
 
-### [.isBoolean](index.js#L398)
+### [.isBoolean](index.js#L359)
 
 Return true if the value of key is either `true` or `false`.
 
@@ -316,6 +301,15 @@ app.isBoolean('c');
 //=> true
 ```
 
+## Release history
+
+### v4.0.0
+
+**Breaking changes**
+
+* `.option` method no longer takes a list or array of objects
+* `.mergeOptions` was removed
+
 ## About
 
 ### Related projects
@@ -333,7 +327,7 @@ Pull requests and stars are always welcome. For bugs and feature requests, [plea
 
 | **Commits** | **Contributor** | 
 | --- | --- |
-| 91 | [jonschlinkert](https://github.com/jonschlinkert) |
+| 95 | [jonschlinkert](https://github.com/jonschlinkert) |
 | 2 | [tunnckoCore](https://github.com/tunnckoCore) |
 
 ### Building docs
