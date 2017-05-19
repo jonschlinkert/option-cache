@@ -10,7 +10,7 @@ describe('#fillin()', function() {
       app = new Options();
     });
 
-    it('should expose an fillins method', function() {
+    it('should expose a fillin method', function() {
       assert.equal(typeof app.fillin, 'function');
     });
 

@@ -21,10 +21,7 @@ describe('constructor', function() {
   });
 
   it('should load default options from the constructor.', function() {
-    app = new Options();
-    app.option('a', 'b');
-    app.option('c', 'd');
-    app.option('e', 'f');
+    app = new Options({a: 'b', c: 'd', e: 'f'});
     assert(app.options.hasOwnProperty('a'));
     assert(app.options.hasOwnProperty('c'));
     assert(app.options.hasOwnProperty('e'));

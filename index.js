@@ -1,7 +1,7 @@
 /*!
  * option-cache <https://github.com/jonschlinkert/option-cache>
  *
- * Copyright (c) 2014-2015, 2017, Jon Schlinkert.
+ * Copyright (c) 2014-2017, Jon Schlinkert.
  * Released under the MIT License.
  */
 
@@ -25,6 +25,7 @@ function Options(options) {
   if (!(this instanceof Options)) {
     return new Options(options);
   }
+  this.defaults = this.defaults || {};
   this.options = this.options || {};
   if (options) {
     this.option(options);
@@ -64,16 +65,16 @@ Options.prototype = Emitter({
       }
     }
 
-    if (typeof key === 'string') {
+    var type = utils.typeOf(key);
+    if (type === 'string') {
       if (arguments.length === 1) {
-        return utils.get(this.options, key);
+        return this.either(key, utils.get(this.defaults, key));
       }
       utils.set(this.options, key, value);
       this.emit('option', key, value);
       return this;
     }
 
-    var type = utils.typeOf(key);
     if (type !== 'object' && type !== 'array') {
       var msg = 'expected option to be a string, object or array';
       throw new TypeError(msg);
@@ -82,41 +83,71 @@ Options.prototype = Emitter({
   },
 
   /**
-   * Merge an object, list of objects, or array of objects,
-   * onto the `app.options`.
+   * Set or get a default value. Defaults are cached on the `.defaults`
+   * object.
    *
    * ```js
-   * app.mergeOptions({a: 'b'}, {c: 'd'});
-   * app.option('a');
-   * //=> 'b'
-   * app.option('c');
-   * //=> 'd'
+   * app.default('admin', false);
+   * app.default('admin');
+   * //=> false
+   *
+   * app.option('admin');
+   * //=> false
+   *
+   * app.option('admin', true);
+   * app.option('admin');
+   * //=> true
    * ```
-   * @param {Object} `options`
+   * @name .option
+   * @param {String} `key` The option name.
+   * @param {*} `value` The value to set.
+   * @return {*} Returns a `value` when only `key` is defined.
+   * @api public
+   */
+
+  default: function(prop, val) {
+    switch (utils.typeOf(prop)) {
+      case 'object':
+        this.visit('default', prop);
+        return this;
+      case 'string':
+        if (typeof val !== 'undefined') {
+          utils.set(this.defaults, prop, val);
+          return this;
+        }
+        return utils.get(this.defaults, prop);
+      default: {
+        throw new TypeError('expected a string or object');
+      }
+    }
+  },
+
+  /**
+   * Returns the value of `key` or `value`, Or, if `type` is passed
+   * and the value of `key` is not the same javascript native type
+   * as `type`, then `value` is returned.
+   *
+   * ```js
+   * app.option('admin', true);
+   * console.log(app.either('admin', false));
+   * //=> true
+   *
+   * console.log(app.either('collaborator', false));
+   * //=> false
+   * ```
+   * @param {String} `key`
+   * @param {any} `value`
+   * @param {String} `type` Javascript native type (optional)
    * @return {Object}
    * @api public
    */
 
-  mergeOptions: function(options) {
-    var args = [].slice.call(arguments);
-    if (Array.isArray(options)) {
-      args = utils.flatten(args);
+  either: function(key, value, type) {
+    var val = utils.get(this.options, key);
+    if (typeof val === 'undefined' || (type && utils.typeOf(val) !== type)) {
+      return value;
     }
-
-    var len = args.length;
-    var idx = -1;
-
-    while (++idx < len) {
-      var arg = args[idx];
-      for (var key in arg) {
-        if (arg.hasOwnProperty(key)) {
-          var val = arg[key];
-          this.emit('option', key, val);
-          utils.set(this.options, key, val);
-        }
-      }
-    }
-    return this;
+    return val;
   },
 
   /**
@@ -143,21 +174,50 @@ Options.prototype = Emitter({
    * @api public
    */
 
-  fillin: function(key, value, type) {
-    if (utils.typeOf(key) === 'object') {
-      var obj = key;
+  fillin: function(prop, value, type) {
+    if (utils.typeOf(prop) === 'object') {
+      var obj = prop;
 
-      for (var prop in obj) {
-        if (obj.hasOwnProperty(prop)) {
-          this.fillin(prop, obj[prop], type);
-        }
+      var keys = Object.keys(obj);
+      for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        this.fillin(key, obj[key], type);
       }
     } else {
-      var val = this.option(key);
+      var val = this.option(prop);
       if (typeof val === 'undefined' || (typeof type === 'string' && utils.typeOf(val) !== type)) {
-        this.option(key, value);
+        this.option(prop, value);
       }
     }
+    return this;
+  },
+
+  /**
+   * Merge an object, list of objects, or array of objects,
+   * onto the `app.options`.
+   *
+   * ```js
+   * app.mergeOptions({a: 'b'}, {c: 'd'});
+   * app.option('a');
+   * //=> 'b'
+   * app.option('c');
+   * //=> 'd'
+   * ```
+   * @param {Object} `options`
+   * @return {Object}
+   * @api public
+   */
+
+  mergeOptions: function(options) {
+    var args = [].slice.call(arguments);
+    if (Array.isArray(options)) {
+      args = utils.flatten(args);
+    }
+
+    utils.mergeArray(args, function(val, key) {
+      this.emit('option', key, val);
+      utils.set(this.options, key, val);
+    }, this);
     return this;
   },
 

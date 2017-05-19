@@ -14,6 +14,10 @@ describe('#option()', function() {
       assert.equal(typeof app.option, 'function');
     });
 
+    it('should return if undefined', function() {
+      assert.equal(typeof app.option(), 'undefined');
+    });
+
     it('should be chainable.', function() {
       app
         .option({x: 'xxx', y: 'yyy', z: 'zzz'})

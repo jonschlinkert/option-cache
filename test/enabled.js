@@ -12,17 +12,17 @@ describe('#enabled', function() {
   describe('#enable()', function() {
     it('should set the value to true', function() {
       app.enable('a');
-      assert(app.options.a === true);
+      assert.equal(app.options.a, true);
     });
 
     it('should enable a nested value', function() {
       app.enable('a.b.c');
-      assert(app.options.a.b.c === true);
+      assert.equal(app.options.a.b.c, true);
     });
 
     it('should support array syntax', function() {
       app.enable(['a', 'b', 'c']);
-      assert(app.options.a.b.c === true);
+      assert.equal(app.options.a.b.c, true);
     });
   });
 
